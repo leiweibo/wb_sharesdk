@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import com.niubang.uguma.qq.QQComponent;
 import com.niubang.uguma.wechat.WechatComponent;
 import com.niubang.uguma.weibo.WeiboComponent;
 
@@ -11,6 +12,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
   private WeiboComponent weiboComponent;
   private WechatComponent wechatComponent;
+  private QQComponent qqComponent;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -20,10 +22,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.weixin).setOnClickListener(this);
     findViewById(R.id.weibo_login).setOnClickListener(this);
     findViewById(R.id.weixin_login).setOnClickListener(this);
+    findViewById(R.id.qq).setOnClickListener(this);
+    findViewById(R.id.qzone).setOnClickListener(this);
+    findViewById(R.id.qq_login).setOnClickListener(this);
 
 
     weiboComponent = new WeiboComponent(this, savedInstanceState);
     wechatComponent = new WechatComponent(this);
+    qqComponent = new QQComponent(this);
   }
 
   @Override public void onClick(View view) {
@@ -36,12 +42,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         weiboComponent.login();
         break;
 
-      case R.id.qq:
+      case R.id.qq_login:
+        qqComponent.login();
+        break;
 
+      case R.id.qq:
+        qqComponent.shareToQQ();
         break;
 
       case R.id.qzone:
-
+        qqComponent.shareToQzone();
         break;
 
       case R.id.weixin_login:
