@@ -28,6 +28,9 @@
         android:windowSoftInputMode="adjustResize">
     </activity>
 
+    <activity android:name=".wxapi.WXEntryActivity"
+    android:exported="true"/>
+
     <service
         android:exported="false"
         android:name="com.sina.weibo.sdk.net.DownloadService"/>
