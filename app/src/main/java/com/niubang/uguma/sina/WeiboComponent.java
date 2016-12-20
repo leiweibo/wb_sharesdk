@@ -1,4 +1,4 @@
-package com.niubang.uguma.weibo;
+package com.niubang.uguma.sina;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.Toast;
+import com.niubang.uguma.BaseComponent;
 import com.niubang.uguma.R;
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
@@ -30,7 +31,7 @@ import java.text.SimpleDateFormat;
  * 微博分享登录组件
  * Created by leiweibo on 12/14/16.
  */
-public class WeiboComponent implements IWeiboHandler.Response {
+public class WeiboComponent extends BaseComponent implements IWeiboHandler.Response {
   // 微博微博分享接口实例
   private IWeiboShareAPI weiboShareAPI;
 
@@ -197,6 +198,10 @@ public class WeiboComponent implements IWeiboHandler.Response {
     if (ssoHandler != null) {
       ssoHandler.authorizeCallBack(requestCode, resultCode, data);
     }
+  }
+
+  @Override protected String getSource() {
+    return com.niubang.uguma.Constants.BIND_SOURCE_SINA;
   }
 
   /**

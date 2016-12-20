@@ -1,4 +1,4 @@
-package com.niubang.uguma.wechat;
+package com.niubang.uguma.weixin;
 
 /**
  * Created by leiweibo on 12/16/16.

@@ -1,7 +1,9 @@
-package com.niubang.uguma.wechat;
+package com.niubang.uguma.weixin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
+import com.niubang.uguma.BaseComponent;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -16,11 +18,11 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
  * Created by leiweibo on 12/15/16.
  */
 
-public class WechatComponent {
+public class WexinComponent extends BaseComponent {
 
   private Context context;
   IWXAPI wxapi;
-  public WechatComponent(Context context) {
+  public WexinComponent(Context context) {
     this.context = context;
     this.wxapi = WXAPIFactory.createWXAPI(context, Constants.APP_ID, true);
   }
@@ -78,5 +80,13 @@ public class WechatComponent {
 
     wxapi.sendReq(req);
 
+  }
+
+  @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+  }
+
+  @Override protected String getSource() {
+    return com.niubang.uguma.Constants.BIND_SOURCE_WEIXIN;
   }
 }

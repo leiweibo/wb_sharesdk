@@ -1,4 +1,4 @@
-package com.niubang.uguma.weibo;
+package com.niubang.uguma.sina;
 
 /**
  * Created by leiweibo on 12/14/16.
