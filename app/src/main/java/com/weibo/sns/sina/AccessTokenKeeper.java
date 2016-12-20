@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.niubang.uguma.sina;
+package com.weibo.sns.sina;
 
 import android.content.Context;
 import android.content.SharedPreferences;

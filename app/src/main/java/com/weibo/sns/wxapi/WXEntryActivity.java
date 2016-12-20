@@ -1,16 +1,16 @@
-package com.niubang.uguma.wxapi;
+package com.weibo.sns.wxapi;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import com.niubang.uguma.Constants;
-import com.niubang.uguma.LoginCallback;
-import com.niubang.uguma.UserInfoResponse;
-import com.niubang.uguma.weixin.AccessTokenResponse;
-import com.niubang.uguma.weixin.ServiceFactory;
-import com.niubang.uguma.weixin.WeiXinRawUserInfoResponse;
-import com.niubang.uguma.weixin.WexinComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
+import com.weibo.sns.UserInfoResponse;
+import com.weibo.sns.weixin.models.AccessTokenResponse;
+import com.weibo.sns.weixin.network.ServiceFactory;
+import com.weibo.sns.weixin.models.WeiXinRawUserInfoResponse;
+import com.weibo.sns.weixin.WexinComponent;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;

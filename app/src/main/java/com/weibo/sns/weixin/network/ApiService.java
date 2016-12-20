@@ -1,5 +1,7 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin.network;
 
+import com.weibo.sns.weixin.models.AccessTokenResponse;
+import com.weibo.sns.weixin.models.WeiXinRawUserInfoResponse;
 import java.util.Map;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

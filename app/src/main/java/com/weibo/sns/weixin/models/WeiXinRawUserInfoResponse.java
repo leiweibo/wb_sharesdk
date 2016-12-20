@@ -1,8 +1,8 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin.models;
 
 import com.google.gson.annotations.SerializedName;
-import com.niubang.uguma.Constants;
-import com.niubang.uguma.UserInfoResponse;
+import com.weibo.sns.Constants;
+import com.weibo.sns.UserInfoResponse;
 
 /**
  * Created by leiweibo on 12/20/16.

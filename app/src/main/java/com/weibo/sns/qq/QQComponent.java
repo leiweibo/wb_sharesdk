@@ -1,4 +1,4 @@
-package com.niubang.uguma.qq;
+package com.weibo.sns.qq;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import com.niubang.uguma.BaseComponent;
-import com.niubang.uguma.Constants;
-import com.niubang.uguma.LoginCallback;
-import com.niubang.uguma.UserInfoResponse;
-import com.niubang.uguma.Util;
+import com.weibo.sns.BaseComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
+import com.weibo.sns.UserInfoResponse;
+import com.weibo.sns.Util;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;

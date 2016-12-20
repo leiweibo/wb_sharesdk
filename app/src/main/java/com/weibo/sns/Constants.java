@@ -1,4 +1,4 @@
-package com.niubang.uguma;
+package com.weibo.sns;
 
 /**
  * Created by leiweibo on 12/20/16.

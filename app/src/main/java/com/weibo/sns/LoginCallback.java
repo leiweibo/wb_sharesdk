@@ -1,4 +1,4 @@
-package com.niubang.uguma;
+package com.weibo.sns;
 
 
 /**

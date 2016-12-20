@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
   compileSdkVersion 23
@@ -20,12 +20,11 @@ android {
   }
 
   defaultConfig {
-    applicationId "com.niubang.uguma"
+//    applicationId "com.niubang.uguma"
     minSdkVersion 15
     targetSdkVersion 23
     versionCode 1
     versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {

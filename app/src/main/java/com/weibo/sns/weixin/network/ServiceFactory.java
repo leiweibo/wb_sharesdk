@@ -1,4 +1,4 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin.network;
 
 /**
  * Created by leiweibo on 12/20/16.

@@ -1,4 +1,4 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin.models;
 
 import com.google.gson.annotations.SerializedName;
 

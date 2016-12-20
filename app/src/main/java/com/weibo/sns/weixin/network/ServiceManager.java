@@ -1,4 +1,4 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin.network;
 
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;

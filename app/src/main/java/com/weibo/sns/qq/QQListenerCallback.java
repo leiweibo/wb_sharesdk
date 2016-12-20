@@ -1,4 +1,4 @@
-package com.niubang.uguma.qq;
+package com.weibo.sns.qq;
 
 import org.json.JSONObject;
 

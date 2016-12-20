@@ -1,4 +1,4 @@
-package com.niubang.uguma.sina;
+package com.weibo.sns.sina;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-import com.niubang.uguma.BaseComponent;
-import com.niubang.uguma.Constants;
-import com.niubang.uguma.LoginCallback;
-import com.niubang.uguma.R;
-import com.niubang.uguma.UserInfoResponse;
+import com.weibo.sns.BaseComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
+import com.weibo.sns.R;
+import com.weibo.sns.UserInfoResponse;
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
@@ -256,7 +256,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   }
 
   @Override protected String getSource() {
-    return com.niubang.uguma.Constants.BIND_SOURCE_SINA;
+    return com.weibo.sns.Constants.BIND_SOURCE_SINA;
   }
 
   /**

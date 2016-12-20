@@ -1,11 +1,11 @@
-package com.niubang.uguma.weixin;
+package com.weibo.sns.weixin;
 
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
-import com.niubang.uguma.BaseComponent;
-import com.niubang.uguma.Constants;
-import com.niubang.uguma.LoginCallback;
+import com.weibo.sns.BaseComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -113,6 +113,6 @@ public class WexinComponent extends BaseComponent {
   }
 
   @Override protected String getSource() {
-    return com.niubang.uguma.Constants.BIND_SOURCE_WEIXIN;
+    return com.weibo.sns.Constants.BIND_SOURCE_WEIXIN;
   }
 }

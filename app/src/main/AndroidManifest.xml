@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.niubang.uguma">
+    package="com.weibo.sns">
 
   <uses-permission android:name="android.permission.INTERNET"/>
   <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -13,13 +13,6 @@
       android:label="@string/app_name"
       android:supportsRtl="true"
       android:theme="@style/AppTheme">
-    <activity android:name=".MainActivity">
-      <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-
-        <category android:name="android.intent.category.LAUNCHER"/>
-      </intent-filter>
-    </activity>
 
     <!-- 必须注册在微博授权，分享微博时候用到 -->
     <activity android:configChanges="keyboardHidden|orientation"
@@ -29,7 +22,7 @@
     </activity>
 
     <!-- 微信 -->
-    <activity android:name=".wxapi.WXEntryActivity"
+    <activity android:name="com.weibo.sns.wxapi.WXEntryActivity"
     android:exported="true"/>
 
     <!-- QQ -->
