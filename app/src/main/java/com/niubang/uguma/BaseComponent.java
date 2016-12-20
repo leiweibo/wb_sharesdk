@@ -8,6 +8,8 @@ import android.content.Intent;
 
 public abstract class BaseComponent {
 
+  protected LoginCallback loginCallback;
+
   /**
    * 某些平台上要对onActivityResult进行处理，细节看每个对应的component里面的onActivityResult的注释
    * @param requestCode 请求code

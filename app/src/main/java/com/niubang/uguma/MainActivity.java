@@ -44,7 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
       case R.id.weibo_login:
         component = weiboComponent;
-        weiboComponent.login();
+        weiboComponent.login(new LoginCallback() {
+          @Override public void onComplete(UserInfoResponse userInfo) {
+            Log.e("Weibooooo", userInfo.toString());
+          }
+        });
         break;
 
       case R.id.qq_login:

@@ -6,9 +6,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 import com.niubang.uguma.BaseComponent;
+import com.niubang.uguma.LoginCallback;
 import com.niubang.uguma.R;
+import com.niubang.uguma.UserInfoResponse;
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
@@ -24,8 +28,10 @@ import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.exception.WeiboException;
+import com.sina.weibo.sdk.net.RequestListener;
+import com.sina.weibo.sdk.openapi.UsersAPI;
+import com.sina.weibo.sdk.openapi.models.User;
 import com.sina.weibo.sdk.utils.Utility;
-import java.text.SimpleDateFormat;
 
 /**
  * 微博分享登录组件
@@ -162,39 +168,87 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   /**
    * 登录功能，如果本地已经安装微博客户端，那么直接唤起微博客户端进行登录认证，如果没有登录，则通过WebView进行登录
    */
-  public void login() {
+  public void login(final LoginCallback callback) {
     //实例化登录认证sso实例
     ssoHandler = new SsoHandler((Activity) context, authInfo);
     //如果实例化登录认证sso成功，则不为空，开始进行认证登录操作
     if (ssoHandler != null) {
-      ssoHandler.authorize(new WeiboAuthListener() {
-        @Override public void onComplete(Bundle bundle) {
-          Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(bundle);
-          if (accessToken != null && accessToken.isSessionValid()) {
-            String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(
-                new java.util.Date(accessToken.getExpiresTime()));
-            //String format = context.getString(R.string.weibosdk_demo_token_to_string_format_1);
-            //mTokenView.setText(String.format(format, accessToken.getToken(), date));
+      ssoHandler.authorize(buildWeiboListener(new WeiboListenerCallback() {
+        @Override public void doComplete() {
+          getUserInfo();
+        }
+      }));
+    }
 
-            AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), accessToken);
+    this.loginCallback = callback;
+  }
+
+  /**
+   * 构建微博回调监听
+   *
+   * @param callback 回调
+   */
+  private WeiboAuthListener buildWeiboListener(final WeiboListenerCallback callback) {
+    WeiboAuthListener weiboAuthListener = new WeiboAuthListener() {
+      @Override public void onComplete(Bundle bundle) {
+        Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(bundle);
+        if (accessToken != null && accessToken.isSessionValid()) {
+          AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), accessToken);
+          if (callback != null) {
+            callback.doComplete();
           }
         }
+      }
 
-        @Override public void onWeiboException(WeiboException e) {
-          Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+      @Override public void onWeiboException(WeiboException e) {
+        Toast.makeText(context, "登录失败，请重试", Toast.LENGTH_SHORT).show();
+        Log.e(getClass().getName(), e.getMessage());
+      }
 
-        @Override public void onCancel() {
-          Toast.makeText(context, "登录取消", Toast.LENGTH_SHORT).show();
+      @Override public void onCancel() {
+        Toast.makeText(context, "登录取消", Toast.LENGTH_SHORT).show();
+      }
+    };
+    return weiboAuthListener;
+  }
+
+  /**
+   * 网络请求获取用户信息
+   */
+  private void getUserInfo() {
+    Oauth2AccessToken token = AccessTokenKeeper.readAccessToken(context);
+    UsersAPI usersAPI = new UsersAPI(context, Constants.APP_KEY, token);
+    final long uid = Long.valueOf(token.getUid());
+    usersAPI.show(uid, new RequestListener() {
+      @Override public void onComplete(String response) {
+        if (!TextUtils.isEmpty(response)) {
+          // 调用 User#parse 将JSON串解析成User对象
+          User user = User.parse(response);
+          UserInfoResponse userInfo =
+              new UserInfoResponse(getSource(), user.id, user.screen_name, user.profile_image_url);
+          if (user != null) {
+            if (loginCallback != null) {
+              loginCallback.onComplete(userInfo);
+            }
+          } else {
+            Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+            Log.e(getClass().getName(), "获取用户信息失败：" + response);
+          }
         }
-      });
-    }
+      }
+
+      @Override public void onWeiboException(WeiboException e) {
+        Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+      }
+    });
   }
 
   /**
    * 登录完成使用的activityResult里面需要添加
    */
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    // SSO 授权回调
+    // 重要：发起 SSO 登陆的 Activity 必须重写 onActivityResults
     if (ssoHandler != null) {
       ssoHandler.authorizeCallBack(requestCode, resultCode, data);
     }
@@ -206,9 +260,9 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
 
   /**
    * 用于微博分享
-   *从当前应用唤起微博并进行分享后，返回到当前应用时，需要在此处调用该函数
-   *来接收微博客户端返回的数据；执行成功，返回 true，并调用
-   *{@link IWeiboHandler.Response#onResponse}；失败返回 false，不调用上述回调
+   * 从当前应用唤起微博并进行分享后，返回到当前应用时，需要在此处调用该函数
+   * 来接收微博客户端返回的数据；执行成功，返回 true，并调用
+   * {@link IWeiboHandler.Response#onResponse}；失败返回 false，不调用上述回调
    */
   public void onNewIntent(Intent intent) {
     weiboShareAPI.handleWeiboResponse(intent, this);

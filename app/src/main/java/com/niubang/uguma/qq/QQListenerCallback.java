@@ -7,5 +7,5 @@ import org.json.JSONObject;
  */
 
 public interface QQListenerCallback {
-  public void doComplete(JSONObject object);
+  void doComplete(JSONObject object);
 }

@@ -41,7 +41,6 @@ public class QQComponent extends BaseComponent {
   private Context context;
   private Tencent tencent;
   private IUiListener qqRequestListener;
-  private LoginCallback loginCallback;
 
   public QQComponent(Context context) {
     super();

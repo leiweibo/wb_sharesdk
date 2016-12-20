@@ -49,4 +49,5 @@ android {
 dependencies {
   compile fileTree(dir: 'libs', include: ['*.jar'])
   compile 'com.android.support:appcompat-v7:23.0.0'
+  compile project(path: ':weibosdk')
 }
