@@ -1,10 +1,12 @@
 package com.niubang.uguma;
 
+import java.io.Serializable;
+
 /**
  * Created by leiweibo on 12/20/16.
  */
 
-public class UserInfoResponse {
+public class UserInfoResponse implements Serializable {
 
   private String snsKind;
   private String uid;

@@ -23,4 +23,8 @@ public abstract class BaseComponent {
    * @return Constants.BIND_SOURCE_xxx
    */
   protected abstract String getSource();
+
+  public LoginCallback getLoginCallback() {
+    return loginCallback;
+  }
 }

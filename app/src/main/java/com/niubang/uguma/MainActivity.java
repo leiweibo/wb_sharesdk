@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     weiboComponent = new WeiboComponent(this, savedInstanceState);
-    wechatComponent = new WexinComponent(this);
+    wechatComponent = WexinComponent.getInstance(this);
     qqComponent = new QQComponent(this);
   }
 
@@ -72,7 +72,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
       case R.id.weixin_login:
         component = wechatComponent;
-        wechatComponent.login();
+        wechatComponent.login(new LoginCallback() {
+          @Override public void onComplete(UserInfoResponse userInfo) {
+            Log.e("Weibooooo", userInfo.toString());
+          }
+        });
         break;
 
       case R.id.weixin:

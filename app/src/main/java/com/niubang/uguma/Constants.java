@@ -7,6 +7,8 @@ package com.niubang.uguma;
 public class Constants {
 
   public static final String WEIXIN_APP_ID = "wxd07936d8648b4da5";
+  public static final String WEIXIN_APP_SCRECT = "a7309ef6d60a2127318423cbad300aae";
+  public static final String WEIXIN_USER_INFO = "weixin_userinfo";
   public static final String QQ_APP_ID = "1105406253";
 
   /** 当前 DEMO 应用的 APP_KEY，第三方应用应该使用自己的 APP_KEY 替换该 APP_KEY */

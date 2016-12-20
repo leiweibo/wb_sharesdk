@@ -1,1 +1,1 @@
-include ':app', ':weibosdk'
+include ':app', ':weibosdk', ':network'
