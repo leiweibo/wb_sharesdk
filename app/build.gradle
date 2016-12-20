@@ -19,6 +19,11 @@ android {
     }
   }
 
+  lintOptions {
+    abortOnError false
+  }
+
+
   defaultConfig {
 //    applicationId "com.niubang.uguma"
     minSdkVersion 15
