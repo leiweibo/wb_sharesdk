@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 import com.niubang.uguma.BaseComponent;
+import com.niubang.uguma.Constants;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -24,7 +25,7 @@ public class WexinComponent extends BaseComponent {
   IWXAPI wxapi;
   public WexinComponent(Context context) {
     this.context = context;
-    this.wxapi = WXAPIFactory.createWXAPI(context, Constants.APP_ID, true);
+    this.wxapi = WXAPIFactory.createWXAPI(context, Constants.WEIXIN_APP_ID, true);
   }
 
   /**
@@ -32,7 +33,7 @@ public class WexinComponent extends BaseComponent {
    */
   public void login() {
 
-    wxapi.registerApp(Constants.APP_ID);
+    wxapi.registerApp(Constants.WEIXIN_APP_ID);
 
     if (wxapi != null && wxapi.isWXAppInstalled()) {
       SendAuth.Req req = new SendAuth.Req();

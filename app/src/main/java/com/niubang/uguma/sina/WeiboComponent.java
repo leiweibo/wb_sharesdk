@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.niubang.uguma.BaseComponent;
+import com.niubang.uguma.Constants;
 import com.niubang.uguma.LoginCallback;
 import com.niubang.uguma.R;
 import com.niubang.uguma.UserInfoResponse;
@@ -69,7 +70,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     this.context = context;
     this.savedInstance = savedInsance;
     this.authInfo =
-        new AuthInfo(context, Constants.APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+        new AuthInfo(context, Constants.WEIBO_APP_KEY, Constants.WEIBO_REDIRECT_URL, Constants.WEIBO_SCOPE);
   }
 
   /**
@@ -78,7 +79,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    */
   public void share() {
     if (weiboShareAPI == null) {
-      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.APP_KEY);
+      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.WEIBO_APP_KEY);
 
       /*
        * 注册第三方应用到微博客户端中，注册成功后该应用将显示在微博的应用列表中。
@@ -217,7 +218,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    */
   private void getUserInfo() {
     Oauth2AccessToken token = AccessTokenKeeper.readAccessToken(context);
-    UsersAPI usersAPI = new UsersAPI(context, Constants.APP_KEY, token);
+    UsersAPI usersAPI = new UsersAPI(context, Constants.WEIBO_APP_KEY, token);
     final long uid = Long.valueOf(token.getUid());
     usersAPI.show(uid, new RequestListener() {
       @Override public void onComplete(String response) {
