@@ -286,19 +286,19 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     return com.weibo.sns.Constants.BIND_SOURCE_SINA;
   }
 
-  @Override public void shareText() {
+  @Override public void shareImage(String imageUrl) {
 
   }
 
-  @Override public void shareImage() {
+  @Override public void shareImage(Bitmap bitmap) {
 
   }
 
-  @Override public void shareTextWithImage() {
+  @Override public void shareContent(String title, String summary, String targetUrl, String image) {
 
   }
 
-  @Override public void shareUrl() {
+  @Override public void shareContent(String title, String summary, String targetUrl, Bitmap image) {
 
   }
 

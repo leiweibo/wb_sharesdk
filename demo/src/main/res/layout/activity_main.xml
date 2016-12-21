@@ -13,12 +13,6 @@
       android:id="@+id/weibo_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/weibo_share_txt"
-        android:layout_width="wrap_content"
-        android:enabled="false"
-        android:layout_height="wrap_content"
-        android:text="微博-文字"/>
 
     <Button
         android:id="@+id/weibo_share_img"
@@ -35,7 +29,7 @@
         android:text="微博-网页"/>
 
     <Button
-        android:id="@+id/weibo_txt_image"
+        android:id="@+id/weibo_share_txt_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
@@ -45,12 +39,6 @@
   <LinearLayout android:id="@+id/weixin_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/weixin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微信-文字"/>
 
     <Button
         android:id="@+id/weixin2"
@@ -79,12 +67,6 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
     <Button
-        android:id="@+id/wechat1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="PYQ-文字"/>
-    <Button
         android:id="@+id/wechat2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -107,45 +89,38 @@
   <LinearLayout android:id="@+id/qq_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/qq"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="QQ-文字"/>
 
     <Button
-        android:id="@+id/qq2"
+        android:id="@+id/qq_url_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="QQ-图片"/>
+        android:text="QQ-网页1"/>
 
     <Button
-        android:id="@+id/qq3"
+        android:id="@+id/qq_url_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="QQ-网页"/>
+        android:text="QQ-网页2"/>
 
     <Button
-        android:id="@+id/qq4"
+        android:id="@+id/qq_img1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="QQ-图文"/>
+        android:text="QQ-图片1"/>
+
+    <Button
+        android:id="@+id/qq_img2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QQ-图片2"/>
+
+
   </LinearLayout>
 
   <LinearLayout
       android:id="@+id/qzone_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/qzone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="QZ-文字"/>
     <Button
         android:id="@+id/qzone2"
         android:layout_width="wrap_content"

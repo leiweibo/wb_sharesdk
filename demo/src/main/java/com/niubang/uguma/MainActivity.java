@@ -1,6 +1,8 @@
 package com.niubang.uguma;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -9,34 +11,44 @@ import com.weibo.sns.BaseComponent;
 import com.weibo.sns.Constants;
 import com.weibo.sns.LoginApi;
 import com.weibo.sns.LoginCallback;
+import com.weibo.sns.ShareApi;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-  public static final String WEIXIN_APP_ID = "wxd07936d8648b4da5";
-  public static final String WEIXIN_APP_SCRECT = "a7309ef6d60a2127318423cbad300aae";
+  private final String WEIXIN_APP_ID = "wxd07936d8648b4da5";
+  private final String WEIXIN_APP_SCRECT = "a7309ef6d60a2127318423cbad300aae";
+  private final String WEIBO_APP_KEY = "3616164551";
+  private final String QQ_APP_ID = "1105406253";
 
-  public static final String WEIBO_APP_KEY = "3616164551";
-  public static final String QQ_APP_ID = "1105406253";
+  private String title; //标题
+  private String summary; //概要
+  private String content; //内容
+  private Bitmap bitmap; //图片 bitmap
+  private String imageUrl; //图片url
+  private String targetUrl; //分享的url
+  private int shareType; //分享类型
 
   private BaseComponent component;
-  private Bundle saveInstance;
+  private Bundle savedInstance;
   private String platform;
+  private boolean login = false;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    findViewById(R.id.weibo_share_txt).setOnClickListener(this);
-    findViewById(R.id.weixin).setOnClickListener(this);
+    findViewById(R.id.qq_url_1).setOnClickListener(this);
+    findViewById(R.id.qq_url_2).setOnClickListener(this);
+    findViewById(R.id.qq_img1).setOnClickListener(this);
+    findViewById(R.id.qq_img2).setOnClickListener(this);
+
     findViewById(R.id.weibo_login).setOnClickListener(this);
     findViewById(R.id.weixin_login).setOnClickListener(this);
-    findViewById(R.id.qq).setOnClickListener(this);
-    findViewById(R.id.qzone).setOnClickListener(this);
     findViewById(R.id.qq_login).setOnClickListener(this);
 
-    this.saveInstance = savedInstanceState;
+    this.savedInstance = savedInstanceState;
 
     SharePlatformConfig.setQQ(QQ_APP_ID);
     SharePlatformConfig.setSina(WEIBO_APP_KEY);
@@ -44,48 +56,96 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   }
 
   @Override public void onClick(View view) {
+    login = false;
     switch (view.getId()) {
-      case R.id.weibo_share_txt:
+
+      case R.id.qq_url_1: //图片为远程
+        platform = Constants.BIND_SOURCE_QQ;
+        title = "QQ分享标题";
+        summary = "QQ分享概要";
+        content = "QQ分享内容";
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_URL;
         break;
 
-      case R.id.qq:
+      case R.id.qq_url_2: //图片为本地, 需要把文件存入到本地，然后去做分享
+        platform = Constants.BIND_SOURCE_QQ;
+        title = "QQ分享标题-本地";
+        summary = "QQ分享概要";
+        content = "QQ分享内容";
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
         break;
 
-      case R.id.qzone:
+      case R.id.qq_img1: //纯图片发送，本地图片
+        platform = Constants.BIND_SOURCE_QQ;
+        shareType = Constants.SHARE_IMG_LOCAL;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         break;
 
-      case R.id.weixin:
+      case R.id.qq_img2: //纯图片发送，SDK支持
+        platform = Constants.BIND_SOURCE_QQ;
+        shareType = Constants.SHARE_IMG_URL;
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
         break;
 
       /////////////////////////以下是登录
 
       case R.id.weibo_login:
+        login = true;
         this.platform = Constants.BIND_SOURCE_SINA;
         break;
 
       case R.id.qq_login:
+        login = true;
         this.platform = Constants.BIND_SOURCE_QQ;
         break;
 
       case R.id.weixin_login:
+        login = true;
         this.platform = Constants.BIND_SOURCE_WEIXIN;
         break;
     }
 
-    component = LoginApi.getInstance()
-        .with(this)
-        .platform(platform)
-        .savedInstance(saveInstance)
-        .callback(new LoginCallback() {
-          @Override public void onComplete(UserInfoResponse userInfo) {
-            Log.e(platform, userInfo.toString());
-          }
-        })
-        .login();
+    /*
+     * 如果为登录操作
+     */
+    if (login) {
+      component = LoginApi.getInstance()
+          .with(this)
+          .platform(platform)
+          .savedInstance(savedInstance)
+          .callback(new LoginCallback() {
+            @Override public void onComplete(UserInfoResponse userInfo) {
+              Log.e(platform, userInfo.toString());
+            }
+          })
+          .login();
+    } else {
+      runOnUiThread(new Runnable() {
+        @Override public void run() {
+          component = ShareApi.getInstance()
+              .platform(MainActivity.this, platform, savedInstance)
+              .withTitle(title)
+              .withShareType(shareType)
+              .withSummary(summary)
+              .withContent(content)
+              .withImage(bitmap)
+              .withImageUrl(imageUrl)
+              .withTargetUrl(targetUrl)
+              .share();
+        }
+      });
+
+    }
   }
 
   @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    component.onActivityResult(requestCode, resultCode, data);
+    if (component != null) {
+      component.onActivityResult(requestCode, resultCode, data);
+    }
     super.onActivityResult(requestCode, resultCode, data);
   }
 }

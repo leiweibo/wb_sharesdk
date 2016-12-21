@@ -63,7 +63,9 @@ public class LoginApi {
   }
 
   public BaseComponent login() {
-    component.login(callback);
+    if (component != null) {
+      component.login(callback);
+    }
     return component;
   }
 }

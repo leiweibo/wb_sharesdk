@@ -2,9 +2,9 @@ package com.weibo.sns.weixin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.widget.Toast;
 import com.weibo.sns.BaseComponent;
-import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -117,19 +117,20 @@ public class WeixinComponent extends BaseComponent {
     return com.weibo.sns.Constants.BIND_SOURCE_WEIXIN;
   }
 
-  @Override public void shareText() {
+  @Override public void shareImage(String imageUrl) {
 
   }
 
-  @Override public void shareImage() {
+  @Override public void shareImage(Bitmap bitmap) {
 
   }
 
-  @Override public void shareTextWithImage() {
+
+  @Override public void shareContent(String title, String summary, String targetUrl, String image) {
 
   }
 
-  @Override public void shareUrl() {
+  @Override public void shareContent(String title, String summary, String targetUrl, Bitmap image) {
 
   }
 }

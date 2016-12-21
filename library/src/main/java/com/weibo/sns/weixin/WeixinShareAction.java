@@ -1,5 +1,6 @@
 package com.weibo.sns.weixin;
 
+import android.content.Context;
 import com.weibo.sns.ShareAction;
 
 /**
@@ -7,6 +8,9 @@ import com.weibo.sns.ShareAction;
  */
 
 public class WeixinShareAction extends ShareAction {
+  public WeixinShareAction(Context context) {
+
+  }
   @Override public void share() {
 
   }

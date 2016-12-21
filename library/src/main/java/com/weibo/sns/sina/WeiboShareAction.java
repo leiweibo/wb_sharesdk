@@ -1,5 +1,7 @@
 package com.weibo.sns.sina;
 
+import android.content.Context;
+import android.os.Bundle;
 import com.weibo.sns.ShareAction;
 
 /**
@@ -7,6 +9,10 @@ import com.weibo.sns.ShareAction;
  */
 
 public class WeiboShareAction extends ShareAction {
+
+  public WeiboShareAction(Context context, Bundle savedInstance) {
+
+  }
   @Override public void share() {
 
   }

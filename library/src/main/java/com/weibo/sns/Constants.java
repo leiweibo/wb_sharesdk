@@ -45,4 +45,9 @@ public class Constants {
   public final static String BIND_SOURCE_QQ = "qq";
   public final static String BIND_SOURCE_QZONE = "qzone";
 
+  public final static int SHARE_IMG_LOCAL = 1; //本地图片
+  public final static int SHARE_IMG_URL = 2; //图片url
+  public final static int SHARE_URL_IMG_LOCAL = 3; //图文, 图片为本地
+  public final static int SHARE_URL_IMG_URL = 4; //图文，图片为url
+
 }

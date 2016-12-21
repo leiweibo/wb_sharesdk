@@ -3,22 +3,22 @@ package com.weibo.sns.qq;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import android.widget.Toast;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.share.QQShare;
-import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.weibo.sns.BaseComponent;
+import com.weibo.sns.BitmapHelper;
 import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.Util;
-import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +28,7 @@ import static com.tencent.connect.common.Constants.PARAM_EXPIRES_IN;
 import static com.tencent.connect.common.Constants.PARAM_OPEN_ID;
 import static com.tencent.connect.common.Constants.REQUEST_API;
 import static com.tencent.connect.common.Constants.REQUEST_LOGIN;
+import static com.tencent.connect.common.Constants.REQUEST_QQ_SHARE;
 
 /**
  * QQ分享和登录组件,使用的是QQ SDK 3.1.0
@@ -163,6 +164,8 @@ public class QQComponent extends BaseComponent {
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
     if ((requestCode == REQUEST_LOGIN || requestCode == REQUEST_API) && resultCode == ACTIVITY_OK) {
       tencent.onActivityResultData(requestCode, resultCode, data, qqRequestListener);
+    } else if (requestCode == REQUEST_QQ_SHARE) {
+      Tencent.onActivityResultData(requestCode, resultCode, data, qqRequestListener);
     }
   }
 
@@ -171,86 +174,110 @@ public class QQComponent extends BaseComponent {
   }
 
   /**
-   * 纯文字分享
-   */
-  @Override public void shareText() {
-
-  }
-
-  /**
-   * 纯图分享，只能支持本地图片
-   */
-  @Override public void shareImage() {
-
-  }
-
-  /**
-   * 图文分享：
-   */
-  @Override public void shareTextWithImage() {
-
-  }
-
-  /**
-   * 网页分享：
+   * 纯图片发送，目前支持本地图片分享
    *
+   * @param imageUrl 图片的链接
    */
-  @Override public void shareUrl() {
+  @Override public void shareImage(String imageUrl) {
+    Toast.makeText(context, "纯图片发送，目前支持本地图片分享", Toast.LENGTH_SHORT).show();
+  }
 
+  @Override public void shareImage(Bitmap image) {
+    if (image != null) {
+      BitmapHelper bitmapHelper = new BitmapHelper();
+      bitmapHelper.saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
+        @Override public void onFailed() {
+          Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override public void onComplete(String path) {
+          final Bundle params = new Bundle();
+          params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
+          params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
+
+          tencent.shareToQQ((Activity) context, params, buildShareListener());
+        }
+      });
+    }
   }
 
   /**
-   * 发送给QQ用户（单向）
+   * 分享远程图片
+   *
+   * @param title 标题
+   * @param summary 概要
+   * @param targetUrl 网址
+   * @param image 图片url
    */
-  public void shareToQQ() {
+  @Override public void shareContent(String title, String summary, String targetUrl, String image) {
     final Bundle params = new Bundle();
     params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-    params.putString(QQShare.SHARE_TO_QQ_TITLE, "要分享的标题");
-    params.putString(QQShare.SHARE_TO_QQ_SUMMARY, "要分享的摘要");
-    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, "http://www.qq.com/news/1.html");
-    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL,
-        "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif");
-    params.putString(QQShare.SHARE_TO_QQ_APP_NAME, "测试应用222222");
-    //params.putInt(QQShare.SHARE_TO_QQ_EXT_INT,  "其他附加功能");
-    tencent.shareToQQ((Activity) context, params, new IUiListener() {
-      @Override public void onComplete(Object o) {
+    params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+    params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
+    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, image);
 
-      }
-
-      @Override public void onError(UiError uiError) {
-
-      }
-
-      @Override public void onCancel() {
-
-      }
-    });
+    tencent.shareToQQ((Activity) context, params, buildShareListener());
   }
 
   /**
-   * 分享到QQ空间，目前只支持图文分享
+   * 分享本地图片
+   *
+   * @param title 标题
+   * @param summary 概要
+   * @param targetUrl 网址
+   * @param image 本地图片bitmap对象
    */
-  public void shareToQzone() {
-    Bundle params = new Bundle();
-    params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
-    params.putString(QzoneShare.SHARE_TO_QQ_TITLE, "标题");//必填
-    params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, "摘要");//选填
-    params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, "http://www.uguma.com");//必填
-    ArrayList<String> urls = new ArrayList<>();
-    urls.add("http://photo.iyaxin.com/attachement/jpg/site2/20111122/001966a9235310358ab51f.jpg");
-    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urls);
-    tencent.shareToQzone((Activity) context, params, new IUiListener() {
+  @Override public void shareContent(final String title, final String summary,
+      final String targetUrl, final Bitmap image) {
+
+    if (image != null) {
+      BitmapHelper bitmapHelper = new BitmapHelper();
+      bitmapHelper.saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
+        @Override public void onFailed() {
+          Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override public void onComplete(String path) {
+          final Bundle params = new Bundle();
+          params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+          params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+          params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+          params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
+          params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
+
+          tencent.shareToQQ((Activity) context, params, buildShareListener());
+        }
+      });
+    } else {
+      final Bundle params = new Bundle();
+      params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+      params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+      params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+      params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
+
+      tencent.shareToQQ((Activity) context, params, buildShareListener());
+    }
+  }
+
+  private IUiListener buildShareListener() {
+    IUiListener uiListener = new IUiListener() {
       @Override public void onComplete(Object o) {
-        Log.e("weibooo", "onComplete");
+        Toast.makeText(context, "分享完成", Toast.LENGTH_SHORT).show();
       }
 
       @Override public void onError(UiError uiError) {
-        Log.e("weibooo", "onError");
+        ((Activity) context).runOnUiThread(new Runnable() {
+          @Override public void run() {
+            Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+          }
+        });
       }
 
       @Override public void onCancel() {
-        Log.e("weibooo", "onCancel");
+        Toast.makeText(context, "分享取消", Toast.LENGTH_SHORT).show();
       }
-    });
+    };
+    return uiListener;
   }
 }

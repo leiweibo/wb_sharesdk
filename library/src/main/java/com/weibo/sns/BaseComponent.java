@@ -1,6 +1,7 @@
 package com.weibo.sns;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 
 /**
  * Created by leiweibo on 12/20/16.
@@ -34,22 +35,32 @@ public abstract class BaseComponent {
   }
 
   /**
-   * 纯文字分享
+   * 纯图片分享
+   * @param imageUrl 图片的链接
    */
-  public abstract void shareText();
+  public abstract void shareImage(String imageUrl);
 
   /**
    * 纯图片分享
+   * @param bitmap 本地图片被转化bitmap
    */
-  public abstract void shareImage();
-
-  /**
-   * 图文分享
-   */
-  public abstract void shareTextWithImage();
+  public abstract void shareImage(Bitmap bitmap);
 
   /**
    * 网页分享
+   * @param title
+   * @param summary
+   * @param targetUrl
+   * @param imageUrl
    */
-  public abstract void shareUrl();
+  public abstract void shareContent(String title, String summary, String targetUrl, String imageUrl);
+
+  /**
+   * 网页分享，含本地图片
+   * @param title
+   * @param summary
+   * @param targetUrl
+   * @param image
+   */
+  public abstract void shareContent(String title, String summary, String targetUrl, Bitmap image);
 }
