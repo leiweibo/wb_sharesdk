@@ -12,6 +12,7 @@ import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.weibo.sns.SharePlatformConfig;
 
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
 
@@ -50,7 +51,7 @@ public class WeixinComponent extends BaseComponent {
 
   private WeixinComponent(Context context) {
     this.context = context;
-    this.wxapi = WXAPIFactory.createWXAPI(context, Constants.WEIXIN_APP_ID, true);
+    this.wxapi = WXAPIFactory.createWXAPI(context, SharePlatformConfig.getWeixinAppKey(), true);
   }
 
   /**
@@ -58,7 +59,7 @@ public class WeixinComponent extends BaseComponent {
    */
   public void login(LoginCallback callback) {
 
-    wxapi.registerApp(Constants.WEIXIN_APP_ID);
+    wxapi.registerApp(SharePlatformConfig.getWeixinAppKey());
 
     if (wxapi != null && wxapi.isWXAppInstalled()) {
       SendAuth.Req req = new SendAuth.Req();
@@ -114,5 +115,21 @@ public class WeixinComponent extends BaseComponent {
 
   @Override protected String getSource() {
     return com.weibo.sns.Constants.BIND_SOURCE_WEIXIN;
+  }
+
+  @Override public void shareText() {
+
+  }
+
+  @Override public void shareImage() {
+
+  }
+
+  @Override public void shareTextWithImage() {
+
+  }
+
+  @Override public void shareUrl() {
+
   }
 }

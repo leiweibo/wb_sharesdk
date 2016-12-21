@@ -29,7 +29,7 @@
     </activity>
 
     <!-- 微信 -->
-    <activity android:name="wxapi.WXEntryActivity"
+    <activity android:name=".wxapi.WXEntryActivity"
         android:exported="true"/>
 
     <!-- QQ -->

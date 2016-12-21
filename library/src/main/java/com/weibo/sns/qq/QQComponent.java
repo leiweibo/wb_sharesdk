@@ -6,17 +6,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import com.weibo.sns.BaseComponent;
-import com.weibo.sns.Constants;
-import com.weibo.sns.LoginCallback;
-import com.weibo.sns.UserInfoResponse;
-import com.weibo.sns.Util;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
+import com.weibo.sns.BaseComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
+import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.UserInfoResponse;
+import com.weibo.sns.Util;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class QQComponent extends BaseComponent {
   public QQComponent(Context context) {
     super();
     this.context = context;
-    this.tencent = Tencent.createInstance(Constants.QQ_APP_ID, context);
+    this.tencent = Tencent.createInstance(SharePlatformConfig.getQQAppId(), context);
   }
 
   /**
@@ -139,11 +140,10 @@ public class QQComponent extends BaseComponent {
     JSONObject jsonObject = (JSONObject) response;
     try {
       if (jsonObject != null) {
-        UserInfoResponse userInfoResponse =
-            new UserInfoResponse(getSource(), tencent.getOpenId(), jsonObject.getString(PARAM_NICK_NAME),
-                jsonObject.getString(PARAM_ICON_URL));
+        UserInfoResponse userInfoResponse = new UserInfoResponse(getSource(), tencent.getOpenId(),
+            jsonObject.getString(PARAM_NICK_NAME), jsonObject.getString(PARAM_ICON_URL));
 
-        if(loginCallback != null) {
+        if (loginCallback != null) {
           loginCallback.onComplete(userInfoResponse);
         }
       }
@@ -168,6 +168,35 @@ public class QQComponent extends BaseComponent {
 
   @Override protected String getSource() {
     return Constants.BIND_SOURCE_QQ;
+  }
+
+  /**
+   * 纯文字分享
+   */
+  @Override public void shareText() {
+
+  }
+
+  /**
+   * 纯图分享，只能支持本地图片
+   */
+  @Override public void shareImage() {
+
+  }
+
+  /**
+   * 图文分享：
+   */
+  @Override public void shareTextWithImage() {
+
+  }
+
+  /**
+   * 网页分享：
+   *
+   */
+  @Override public void shareUrl() {
+
   }
 
   /**
@@ -224,5 +253,4 @@ public class QQComponent extends BaseComponent {
       }
     });
   }
-
 }

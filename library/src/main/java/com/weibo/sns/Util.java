@@ -30,7 +30,7 @@ public class Util {
    */
   public static final void toastMessage(final Context activity,
       final String message) {
-    Log.d("ShareSDK", message);
+    //Log.d("ShareSDK", message);
     ((Activity)activity).runOnUiThread(new Runnable() {
       @Override
       public void run() {

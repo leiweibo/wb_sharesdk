@@ -29,6 +29,7 @@ import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.ServiceFactory;
+import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.sina.models.WeiboRawUserInfoResponse;
 import rx.Observable;
 import rx.Observer;
@@ -69,7 +70,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   public WeiboComponent(Context context, Bundle savedInsance) {
     this.context = context;
     this.savedInstance = savedInsance;
-    this.authInfo = new AuthInfo(context, Constants.WEIBO_APP_KEY, Constants.WEIBO_REDIRECT_URL,
+    this.authInfo = new AuthInfo(context, SharePlatformConfig.getSinaAppKey(), Constants.WEIBO_REDIRECT_URL,
         Constants.WEIBO_SCOPE);
   }
 
@@ -283,6 +284,22 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
 
   @Override protected String getSource() {
     return com.weibo.sns.Constants.BIND_SOURCE_SINA;
+  }
+
+  @Override public void shareText() {
+
+  }
+
+  @Override public void shareImage() {
+
+  }
+
+  @Override public void shareTextWithImage() {
+
+  }
+
+  @Override public void shareUrl() {
+
   }
 
   /**

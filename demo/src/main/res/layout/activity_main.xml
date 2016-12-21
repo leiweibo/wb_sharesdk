@@ -1,68 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-  <Button
-      android:id="@+id/weibo"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="微博分享"/>
+  <LinearLayout
+      android:id="@+id/weibo_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/weibo_share_txt"
+        android:layout_width="wrap_content"
+        android:enabled="false"
+        android:layout_height="wrap_content"
+        android:text="微博-文字"/>
 
-  <Button
-      android:id="@+id/weixin"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/weibo"
-      android:text="微信分享"/>
+    <Button
+        android:id="@+id/weibo_share_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微博-图片"/>
 
-  <Button
-      android:id="@+id/qq"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/weibo"
-      android:text="QQ"/>
+    <Button
+        android:id="@+id/weibo_share_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微博-网页"/>
 
-  <Button
-      android:id="@+id/qzone"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/weixin"
-      android:layout_toRightOf="@id/qq"
-      android:text="QZone"/>
+    <Button
+        android:id="@+id/weibo_txt_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微博-图文"/>
+  </LinearLayout>
 
-  <Button
-      android:id="@+id/weibo_login"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/qq"
-      android:text="微博登录"/>
+  <LinearLayout android:id="@+id/weixin_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/weixin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微信-文字"/>
 
-  <Button
-      android:id="@+id/weixin_login"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_toRightOf="@id/weibo"
-      android:layout_below="@id/qzone"
-      android:text="微信登录"/>
+    <Button
+        android:id="@+id/weixin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微信-图片"/>
 
-  <Button
-      android:id="@+id/qq_login"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/weibo_login"
-      android:text="QQ登录"/>
+    <Button
+        android:id="@+id/weixin3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微信-网页"/>
 
-  <Button
-      android:id="@+id/qzone_login"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/weixin_login"
-      android:layout_toRightOf="@id/qq_login"
-      android:text="QZone登录"/>
-</RelativeLayout>
+    <Button
+        android:id="@+id/weixin4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微信-图文"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/wechat_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/wechat1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="PYQ-文字"/>
+    <Button
+        android:id="@+id/wechat2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="PYQ-图片"/>
+    <Button
+        android:id="@+id/wechat3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="PYQ-网址"/>
+    <Button
+        android:id="@+id/wechat4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="PYQ-图文"/>
+  </LinearLayout>
+
+  <LinearLayout android:id="@+id/qq_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QQ-文字"/>
+
+    <Button
+        android:id="@+id/qq2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QQ-图片"/>
+
+    <Button
+        android:id="@+id/qq3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QQ-网页"/>
+
+    <Button
+        android:id="@+id/qq4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QQ-图文"/>
+  </LinearLayout>
+
+  <LinearLayout
+      android:id="@+id/qzone_layout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/qzone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QZ-文字"/>
+    <Button
+        android:id="@+id/qzone2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QZ-图片"/>
+    <Button
+        android:id="@+id/qzone3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QZ-网址"/>
+    <Button
+        android:id="@+id/qzone4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="QZ-图文"/>
+  </LinearLayout>
+
+
+
+  <LinearLayout android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/weibo_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微博登录"/>
+
+    <Button
+        android:id="@+id/weixin_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微信登录"/>
+
+    <Button
+        android:id="@+id/qq_login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QQ登录"/>
+
+
+  </LinearLayout>
+</LinearLayout>

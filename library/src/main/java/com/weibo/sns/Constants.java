@@ -6,13 +6,10 @@ package com.weibo.sns;
 
 public class Constants {
 
-  public static final String WEIXIN_APP_ID = "wxd07936d8648b4da5";
-  public static final String WEIXIN_APP_SCRECT = "a7309ef6d60a2127318423cbad300aae";
-  public static final String WEIXIN_USER_INFO = "weixin_userinfo";
-  public static final String QQ_APP_ID = "1105406253";
-
-  /** 当前 DEMO 应用的 APP_KEY，第三方应用应该使用自己的 APP_KEY 替换该 APP_KEY */
-  public static String WEIBO_APP_KEY = "3616164551";
+  public static final String WEIXIN_APP_ID_KEY = "WEIXIN_APP_ID";
+  public static final String WEIXIN_APP_SCRECT_KEY = "WEIXIN_APP_SCRECT";
+  public static final String QQ_APP_ID_KEY = "QQ_APP_ID";
+  public static String WEIBO_APP_KEY = "WEIBO_APP_KEY";
 
   /**
    * 当前 DEMO 应用的回调页，第三方应用可以使用自己的回调页。
@@ -46,4 +43,6 @@ public class Constants {
   public final static String BIND_SOURCE_WEIXIN = "weixin";
   public final static String BIND_SOURCE_SINA = "weibo";
   public final static String BIND_SOURCE_QQ = "qq";
+  public final static String BIND_SOURCE_QZONE = "qzone";
+
 }
