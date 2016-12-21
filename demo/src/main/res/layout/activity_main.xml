@@ -14,26 +14,35 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
 
+
+
     <Button
-        android:id="@+id/weibo_share_img"
+        android:id="@+id/weibo_share_url1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微博-网页1"/>
+
+    <Button
+        android:id="@+id/weibo_share_url2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="微博-网页2"/>
+
+    <Button
+        android:id="@+id/weibo_share_img1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
         android:text="微博-图片"/>
 
     <Button
-        android:id="@+id/weibo_share_url"
+        android:id="@+id/weibo_share_img2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="微博-网页"/>
-
-    <Button
-        android:id="@+id/weibo_share_txt_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微博-图文"/>
+        android:text="微博-图片"/>
   </LinearLayout>
 
   <LinearLayout android:id="@+id/weixin_layout"

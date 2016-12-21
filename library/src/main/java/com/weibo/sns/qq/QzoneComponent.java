@@ -50,6 +50,10 @@ public class QzoneComponent extends BaseComponent {
     return Constants.BIND_SOURCE_QZONE;
   }
 
+  /**
+   * SDK不支持
+   * @param imageUrl 图片的链接
+   */
   @Override public void shareImage(String imageUrl) {
     final Bundle params = new Bundle();
     params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE);
@@ -59,6 +63,10 @@ public class QzoneComponent extends BaseComponent {
     tencent.shareToQzone((Activity) context, params, buildShareListener());
   }
 
+  /**
+   * SDK不支持
+   * @param image
+   */
   @Override public void shareImage(Bitmap image) {
     if (image != null) {
       BitmapHelper bitmapHelper = new BitmapHelper();
@@ -78,6 +86,13 @@ public class QzoneComponent extends BaseComponent {
     }
   }
 
+  /**
+   * 分享网络图片到QQ空间
+   * @param title
+   * @param summary
+   * @param targetUrl
+   * @param imageUrl
+   */
   @Override
   public void shareContent(String title, String summary, String targetUrl, String imageUrl) {
     Bundle params = new Bundle();
@@ -91,6 +106,14 @@ public class QzoneComponent extends BaseComponent {
     tencent.shareToQzone((Activity) context, params, buildShareListener());
   }
 
+  /**
+   * TODO 尚未调试通过
+   * 分享本地图片到QQ空间 （有问题）
+   * @param title
+   * @param summary
+   * @param targetUrl
+   * @param image
+   */
   @Override
   public void shareContent(final String title, final String summary, final String targetUrl,
       final Bitmap image) {

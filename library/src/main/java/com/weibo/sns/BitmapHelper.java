@@ -3,27 +3,33 @@ package com.weibo.sns;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
- * TODO:将过程转成rxjava实现，暂时用回调实现
- *
  * 分享给第三方，如果是发送本地图片的话，那么需要对本地图片做一些处理
  * Created by leiweibo on 12/21/16.
  */
 
 public class BitmapHelper {
 
+  /**
+   * 保存bitmap到本地sdcard目录
+   * @param bitmap bitmap对象
+   * @param callback 保存之后的回调
+   */
   public void saveBitmap(final Bitmap bitmap, final ImageSaveCallback callback) {
-    Thread thread = new Thread(new Runnable() {
-      @Override public void run() {
+    Observable.create(new Observable.OnSubscribe<String>() {
+      @Override public void call(Subscriber<? super String> subscriber) {
         File file = null;
         // 文件名用时间戳即可，因为对于并发以及同名影响并不是很大
-        String fileName =String.valueOf(System.currentTimeMillis());
+        String fileName = String.valueOf(System.currentTimeMillis());
         if (hasSDCard()) {
           file = Environment.getExternalStorageDirectory();
         } else {
@@ -39,28 +45,41 @@ public class BitmapHelper {
           file.mkdirs();
         }
         String path = writeBitmap(file.getPath(), fileName + ".png", bitmap);
-
-        if (callback != null) {
-          if (TextUtils.isEmpty(path)) {
-            callback.onFailed();
-          } else {
-            callback.onComplete(path);
-          }
+        subscriber.onNext(path);
+        subscriber.onCompleted();
+      }
+    }).observeOn(Schedulers.io())
+      .subscribeOn(AndroidSchedulers.mainThread())
+      .subscribe(new Subscriber<String>() {
+        @Override public void onCompleted() {
 
         }
-      }
-    });
-    thread.start();
+
+        @Override public void onError(Throwable e) {
+
+        }
+
+        @Override public void onNext(String s) {
+          if (callback != null) {
+            if (TextUtils.isEmpty(s)) {
+              callback.onFailed();
+            } else {
+              callback.onComplete(s);
+            }
+          }
+        }
+      });
   }
 
   private boolean failed = false; //判断是否写入文件失败
+
   /**
    * 将bitmap写入到本地
    *
    * @param path: 本地路径
    * @param name 文件名
    * @param bitmap bitmap对象
-   * @return  完整的文件名, 如果处理异常，则返回null
+   * @return 完整的文件名, 如果处理异常，则返回null
    */
   private String writeBitmap(String path, String name, Bitmap bitmap) {
     failed = false;
@@ -130,6 +149,7 @@ public class BitmapHelper {
    */
   public interface ImageSaveCallback {
     void onFailed();
+
     void onComplete(String path);
   }
 }

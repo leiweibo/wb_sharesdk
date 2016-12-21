@@ -70,101 +70,9 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   public WeiboComponent(Context context, Bundle savedInsance) {
     this.context = context;
     this.savedInstance = savedInsance;
-    this.authInfo = new AuthInfo(context, SharePlatformConfig.getSinaAppKey(), Constants.WEIBO_REDIRECT_URL,
-        Constants.WEIBO_SCOPE);
-  }
-
-  /**
-   * 分享接口，在用户尚未登录认证的情况，会让用户先进行登录认证，在登录认证的过程中，如果用户终端有安装
-   * 微博客户端，那么直接唤起微博客户端；如果没有安装，那么直接打开webview页面进行登录认证
-   */
-  public void share() {
-    if (weiboShareAPI == null) {
-      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.WEIBO_APP_KEY);
-
-      /*
-       * 注册第三方应用到微博客户端中，注册成功后该应用将显示在微博的应用列表中。
-       * NOTE：请务必提前注册，即界面初始化的时候或是应用程序初始化时，进行注册
-       */
-      weiboShareAPI.registerApp();
-
-      /*
-       * 当 Activity 被重新初始化时（该 Activity 处于后台时，可能会由于内存不足被杀掉了），
-       * 需要调用 {@link IWeiboShareAPI#handleWeiboResponse} 来接收微博客户端返回的数据。
-       * 执行成功，返回 true，并调用 {@link IWeiboHandler.Response#onResponse}；
-       * 失败返回 false，不调用上述回调
-       */
-      if (savedInstance != null) {
-        weiboShareAPI.handleWeiboResponse(((Activity) context).getIntent(), this);
-      }
-    }
-
-    Oauth2AccessToken accessToken =
-        AccessTokenKeeper.readAccessToken(context.getApplicationContext());
-
-    String token = "";
-    if (accessToken != null) {
-      token = accessToken.getToken();
-    }
-
-
-    /*
-     * 设置文本内容消息
-     */
-    WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
-    TextObject textObject = new TextObject();
-    textObject.text = "This is the content from native weibo share sdk";
-    weiboMultiMessage.textObject = textObject;
-
-    /*
-     * 图片内容消息
-     */
-    ImageObject imageObject = new ImageObject();
-    BitmapFactory.Options options = new BitmapFactory.Options();
-    options.inSampleSize = 4;
-    options.inPreferredConfig = Bitmap.Config.RGB_565;
-    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beauty, options);
-    //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    imageObject.setImageObject(bitmap);
-    weiboMultiMessage.imageObject = imageObject;
-
-    /*
-     * 设置链接内容消息
-     */
-    WebpageObject mediaObject = new WebpageObject();
-    mediaObject.identify = Utility.generateGUID();
-    mediaObject.title = "有股吗";
-    mediaObject.description = "有股吗炒股";
-    // 设置 Bitmap 类型的图片到视频对象里
-    // 设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    //mediaObject.setThumbImage(bitmap);
-    mediaObject.actionUrl = "http://www.uguma.com";
-    mediaObject.defaultText = "Webpage 默认文案";
-    weiboMultiMessage.mediaObject = mediaObject;
-
-    SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
-    request.transaction = String.valueOf(System.currentTimeMillis());
-    request.multiMessage = weiboMultiMessage;
-
-    //发送分享内容，这里会调用微博提供的分享页面
-    weiboShareAPI.sendRequest((Activity) context, request, authInfo, token,
-        new WeiboAuthListener() {
-
-          @Override public void onWeiboException(WeiboException arg0) {
-            if (!bitmap.isRecycled()) {
-              bitmap.recycle();
-            }
-          }
-
-          @Override public void onComplete(Bundle bundle) {
-            Oauth2AccessToken newToken = Oauth2AccessToken.parseAccessToken(bundle);
-            AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), newToken);
-            // Toast.makeText(getApplicationContext(), "onAuthorizeComplete token = " + newToken.getToken(), 0).show();
-          }
-
-          @Override public void onCancel() {
-          }
-        });
+    this.authInfo =
+        new AuthInfo(context, SharePlatformConfig.getSinaAppKey(), Constants.WEIBO_REDIRECT_URL,
+            Constants.WEIBO_SCOPE);
   }
 
   /**
@@ -244,31 +152,6 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
             }
           }
         });
-
-    //UsersAPI usersAPI = new UsersAPI(context, Constants.WEIBO_APP_KEY, token);
-    //final long uid = Long.valueOf(token.getUid());
-    //usersAPI.show(uid, new RequestListener() {
-    //  @Override public void onComplete(String response) {
-    //    if (!TextUtils.isEmpty(response)) {
-    //      // 调用 User#parse 将JSON串解析成User对象
-    //      User user = User.parse(response);
-    //      UserInfoResponse userInfo =
-    //          new UserInfoResponse(getSource(), user.id, user.screen_name, user.profile_image_url);
-    //      if (user != null) {
-    //        if (loginCallback != null) {
-    //          loginCallback.onComplete(userInfo);
-    //        }
-    //      } else {
-    //        Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
-    //        Log.e(getClass().getName(), "获取用户信息失败：" + response);
-    //      }
-    //    }
-    //  }
-    //
-    //  @Override public void onWeiboException(WeiboException e) {
-    //    Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
-    //  }
-    //});
   }
 
   /**
@@ -286,12 +169,140 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     return com.weibo.sns.Constants.BIND_SOURCE_SINA;
   }
 
+  private void checkWeiboShareAPI() {
+    if (weiboShareAPI == null) {
+      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.WEIBO_APP_KEY);
+
+      /*
+       * 注册第三方应用到微博客户端中，注册成功后该应用将显示在微博的应用列表中。
+       * NOTE：请务必提前注册，即界面初始化的时候或是应用程序初始化时，进行注册
+       */
+      weiboShareAPI.registerApp();
+
+      /*
+       * 当 Activity 被重新初始化时（该 Activity 处于后台时，可能会由于内存不足被杀掉了），
+       * 需要调用 {@link IWeiboShareAPI#handleWeiboResponse} 来接收微博客户端返回的数据。
+       * 执行成功，返回 true，并调用 {@link IWeiboHandler.Response#onResponse}；
+       * 失败返回 false，不调用上述回调
+       */
+      if (savedInstance != null) {
+        weiboShareAPI.handleWeiboResponse(((Activity) context).getIntent(), this);
+      }
+    }
+  }
+  /**
+   * 分享接口，在用户尚未登录认证的情况，会让用户先进行登录认证，在登录认证的过程中，如果用户终端有安装
+   * 微博客户端，那么直接唤起微博客户端；如果没有安装，那么直接打开webview页面进行登录认证
+   */
+  public void share() {
+
+
+
+
+
+    /*
+     * 设置文本内容消息
+     */
+    /*WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
+    TextObject textObject = new TextObject();
+    textObject.text = "This is the content from native weibo share sdk";
+    weiboMultiMessage.textObject = textObject;
+
+    *//*
+     * 图片内容消息
+     *//*
+    ImageObject imageObject = new ImageObject();
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inSampleSize = 4;
+    options.inPreferredConfig = Bitmap.Config.RGB_565;
+    bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.beauty, options);
+    //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+    imageObject.setImageObject(bitmap);
+    weiboMultiMessage.imageObject = imageObject;
+
+    *//*
+     * 设置链接内容消息
+     *//*
+    WebpageObject mediaObject = new WebpageObject();
+    mediaObject.identify = Utility.generateGUID();
+    mediaObject.title = "有股吗";
+    mediaObject.description = "有股吗炒股";
+    // 设置 Bitmap 类型的图片到视频对象里
+    // 设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+    //mediaObject.setThumbImage(bitmap);
+    mediaObject.actionUrl = "http://www.uguma.com";
+    mediaObject.defaultText = "Webpage 默认文案";
+    weiboMultiMessage.mediaObject = mediaObject;
+
+    SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
+    request.transaction = String.valueOf(System.currentTimeMillis());
+    request.multiMessage = weiboMultiMessage;
+
+    //发送分享内容，这里会调用微博提供的分享页面
+    weiboShareAPI.sendRequest((Activity) context, request, authInfo, token,
+        new WeiboAuthListener() {
+
+          @Override public void onWeiboException(WeiboException arg0) {
+            if (!bitmap.isRecycled()) {
+              bitmap.recycle();
+            }
+          }
+
+          @Override public void onComplete(Bundle bundle) {
+            Oauth2AccessToken newToken = Oauth2AccessToken.parseAccessToken(bundle);
+            AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), newToken);
+            // Toast.makeText(getApplicationContext(), "onAuthorizeComplete token = " + newToken.getToken(), 0).show();
+          }
+
+          @Override public void onCancel() {
+          }
+        });*/
+  }
+
   @Override public void shareImage(String imageUrl) {
 
   }
 
-  @Override public void shareImage(Bitmap bitmap) {
+  @Override public void shareImage(final Bitmap bitmap) {
+    checkWeiboShareAPI();
+    Oauth2AccessToken accessToken =
+        AccessTokenKeeper.readAccessToken(context.getApplicationContext());
 
+    String token = "";
+    if (accessToken != null) {
+      token = accessToken.getToken();
+    }
+    WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
+    /*
+     * 图片内容消息
+     */
+    ImageObject imageObject = new ImageObject();
+    //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+    imageObject.setImageObject(bitmap);
+    weiboMultiMessage.imageObject = imageObject;
+
+    SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
+    request.transaction = String.valueOf(System.currentTimeMillis());
+    request.multiMessage = weiboMultiMessage;
+
+    //发送分享内容，这里会调用微博提供的分享页面
+    weiboShareAPI.sendRequest((Activity) context, request, authInfo, token,
+        new WeiboAuthListener() {
+
+          @Override public void onWeiboException(WeiboException arg0) {
+            if (!bitmap.isRecycled()) {
+              bitmap.recycle();
+            }
+          }
+
+          @Override public void onComplete(Bundle bundle) {
+            Oauth2AccessToken newToken = Oauth2AccessToken.parseAccessToken(bundle);
+            AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), newToken);
+          }
+
+          @Override public void onCancel() {
+          }
+        });
   }
 
   @Override public void shareContent(String title, String summary, String targetUrl, String image) {
@@ -316,7 +327,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     if (baseResp != null) {
       switch (baseResp.errCode) {
         case WBConstants.ErrorCode.ERR_OK:
-          //                    Toast.makeText(this, R.string.weibosdk_demo_toast_share_success, Toast.LENGTH_LONG).show();
+          //Toast.makeText(this, R.string.weibosdk_demo_toast_share_success, Toast.LENGTH_LONG).show();
           break;
         case WBConstants.ErrorCode.ERR_CANCEL:
           //                    Toast.makeText(this, R.string.weibosdk_demo_toast_share_canceled, Toast.LENGTH_LONG).show();
