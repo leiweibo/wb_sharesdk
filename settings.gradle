@@ -1,1 +1,1 @@
-include ':library', ':weibosdk'
+include ':library', ':demo'

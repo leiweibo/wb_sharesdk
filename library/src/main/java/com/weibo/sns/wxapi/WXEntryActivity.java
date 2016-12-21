@@ -8,7 +8,7 @@ import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.weixin.models.AccessTokenResponse;
-import com.weibo.sns.weixin.network.ServiceFactory;
+import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.weixin.models.WeiXinRawUserInfoResponse;
 import com.weibo.sns.weixin.WexinComponent;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -72,14 +72,14 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     params.put("secret", Constants.WEIXIN_APP_SCRECT);
     params.put("code", code);
     params.put("grant_type", "authorization_code");
-    ServiceFactory.getService()
+    ServiceFactory.getWeixinApiService()
         .getToken(params)
         .subscribeOn(Schedulers.io())
         .observeOn(Schedulers.io())
         .flatMap(new Func1<AccessTokenResponse, Observable<WeiXinRawUserInfoResponse>>() {
           @Override public Observable<WeiXinRawUserInfoResponse> call(
               AccessTokenResponse accessTokenResponse) {
-            return ServiceFactory.getService()
+            return ServiceFactory.getWeixinApiService()
                 .getUserInfo(accessTokenResponse.accessToken, accessTokenResponse.openId);
           }
         })

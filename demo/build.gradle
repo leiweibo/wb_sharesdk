@@ -1,0 +1,46 @@
+apply plugin: 'com.android.application'
+
+android {
+  compileSdkVersion 25
+  buildToolsVersion "24.0.0"
+
+  signingConfigs {
+    debug_config {
+      keyAlias 'heiniu'
+      keyPassword '111111'
+      storeFile file('keystore/keystore2')
+      storePassword '111111'
+    }
+    release_config {
+      keyAlias 'heiniu'
+      keyPassword '111111'
+      storeFile file('keystore/keystore2')
+      storePassword '111111'
+    }
+  }
+
+  defaultConfig {
+    applicationId "com.niubang.uguma"
+    minSdkVersion 15
+    targetSdkVersion 25
+    versionCode 1
+    versionName "1.0"
+  }
+  buildTypes {
+    debug {
+      signingConfig signingConfigs.debug_config
+    }
+    release {
+      minifyEnabled false
+      signingConfig signingConfigs.release_config
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  compile fileTree(dir: 'libs', include: ['*.jar'])
+
+  compile 'com.android.support:appcompat-v7:25.0.0'
+  compile project(path: ':library')
+}

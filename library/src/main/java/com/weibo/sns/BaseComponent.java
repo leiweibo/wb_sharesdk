@@ -16,7 +16,7 @@ public abstract class BaseComponent {
    * @param resultCode 返回的结构的code
    * @param data data
    */
-  protected abstract void onActivityResult(int requestCode, int resultCode, Intent data);
+  public abstract void onActivityResult(int requestCode, int resultCode, Intent data);
 
   /**
    * 每个平台对应的source名称

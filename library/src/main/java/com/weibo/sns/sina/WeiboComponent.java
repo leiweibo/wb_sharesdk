@@ -6,14 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
-import com.weibo.sns.BaseComponent;
-import com.weibo.sns.Constants;
-import com.weibo.sns.LoginCallback;
-import com.weibo.sns.R;
-import com.weibo.sns.UserInfoResponse;
 import com.sina.weibo.sdk.api.ImageObject;
 import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
@@ -29,10 +23,16 @@ import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.constant.WBConstants;
 import com.sina.weibo.sdk.exception.WeiboException;
-import com.sina.weibo.sdk.net.RequestListener;
-import com.sina.weibo.sdk.openapi.UsersAPI;
-import com.sina.weibo.sdk.openapi.models.User;
 import com.sina.weibo.sdk.utils.Utility;
+import com.weibo.sns.BaseComponent;
+import com.weibo.sns.Constants;
+import com.weibo.sns.LoginCallback;
+import com.weibo.sns.R;
+import com.weibo.sns.ServiceFactory;
+import com.weibo.sns.sina.models.WeiboRawUserInfoResponse;
+import rx.Observable;
+import rx.Observer;
+import rx.schedulers.Schedulers;
 
 /**
  * 微博分享登录组件
@@ -69,8 +69,8 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   public WeiboComponent(Context context, Bundle savedInsance) {
     this.context = context;
     this.savedInstance = savedInsance;
-    this.authInfo =
-        new AuthInfo(context, Constants.WEIBO_APP_KEY, Constants.WEIBO_REDIRECT_URL, Constants.WEIBO_SCOPE);
+    this.authInfo = new AuthInfo(context, Constants.WEIBO_APP_KEY, Constants.WEIBO_REDIRECT_URL,
+        Constants.WEIBO_SCOPE);
   }
 
   /**
@@ -218,30 +218,56 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    */
   private void getUserInfo() {
     Oauth2AccessToken token = AccessTokenKeeper.readAccessToken(context);
-    UsersAPI usersAPI = new UsersAPI(context, Constants.WEIBO_APP_KEY, token);
-    final long uid = Long.valueOf(token.getUid());
-    usersAPI.show(uid, new RequestListener() {
-      @Override public void onComplete(String response) {
-        if (!TextUtils.isEmpty(response)) {
-          // 调用 User#parse 将JSON串解析成User对象
-          User user = User.parse(response);
-          UserInfoResponse userInfo =
-              new UserInfoResponse(getSource(), user.id, user.screen_name, user.profile_image_url);
-          if (user != null) {
-            if (loginCallback != null) {
-              loginCallback.onComplete(userInfo);
-            }
-          } else {
-            Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
-            Log.e(getClass().getName(), "获取用户信息失败：" + response);
-          }
-        }
-      }
 
-      @Override public void onWeiboException(WeiboException e) {
-        Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
-      }
-    });
+    Observable<WeiboRawUserInfoResponse> observable =
+        ServiceFactory.getWeiboApiService().getUserInfo(token.getToken(), token.getUid());
+    observable.subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.io())
+        .subscribe(new Observer<WeiboRawUserInfoResponse>() {
+          @Override public void onCompleted() {
+
+          }
+
+          @Override public void onError(Throwable e) {
+            Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+          }
+
+          @Override public void onNext(WeiboRawUserInfoResponse weiboRawUserInfoResponse) {
+            if (weiboRawUserInfoResponse != null) {
+              Log.e(getClass().getName(), weiboRawUserInfoResponse.converToUserInfo().toString());
+              if (loginCallback != null) {
+                loginCallback.onComplete(weiboRawUserInfoResponse.converToUserInfo());
+              }
+            } else {
+              Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+            }
+          }
+        });
+
+    //UsersAPI usersAPI = new UsersAPI(context, Constants.WEIBO_APP_KEY, token);
+    //final long uid = Long.valueOf(token.getUid());
+    //usersAPI.show(uid, new RequestListener() {
+    //  @Override public void onComplete(String response) {
+    //    if (!TextUtils.isEmpty(response)) {
+    //      // 调用 User#parse 将JSON串解析成User对象
+    //      User user = User.parse(response);
+    //      UserInfoResponse userInfo =
+    //          new UserInfoResponse(getSource(), user.id, user.screen_name, user.profile_image_url);
+    //      if (user != null) {
+    //        if (loginCallback != null) {
+    //          loginCallback.onComplete(userInfo);
+    //        }
+    //      } else {
+    //        Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+    //        Log.e(getClass().getName(), "获取用户信息失败：" + response);
+    //      }
+    //    }
+    //  }
+    //
+    //  @Override public void onWeiboException(WeiboException e) {
+    //    Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+    //  }
+    //});
   }
 
   /**
