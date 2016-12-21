@@ -10,7 +10,7 @@ import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.weixin.models.AccessTokenResponse;
 import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.weixin.models.WeiXinRawUserInfoResponse;
-import com.weibo.sns.weixin.WexinComponent;
+import com.weibo.sns.weixin.WeixinComponent;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -97,7 +97,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
           @Override public void onNext(WeiXinRawUserInfoResponse userInfoResponse) {
             UserInfoResponse userInfo = userInfoResponse.converToUserInfo();
-            LoginCallback callback = WexinComponent.getInstance(WXEntryActivity.this).getLoginCallback();
+            LoginCallback callback = WeixinComponent.getInstance(WXEntryActivity.this).getLoginCallback();
             if (callback != null) {
               callback.onComplete(userInfo);
             }

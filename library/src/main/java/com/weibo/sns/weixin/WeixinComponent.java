@@ -27,12 +27,12 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
  * Created by leiweibo on 12/15/16.
  */
 
-public class WexinComponent extends BaseComponent {
+public class WeixinComponent extends BaseComponent {
 
   private Context context;
   private IWXAPI wxapi;
 
-  private static WexinComponent instance;
+  private static WeixinComponent instance;
 
   /**
    * 单例模式，之所以做成单例，是因为微信回调的时候，需要跟component进行通信，
@@ -41,14 +41,14 @@ public class WexinComponent extends BaseComponent {
    * @param context
    * @return
    */
-  public static WexinComponent getInstance(Context context) {
+  public static WeixinComponent getInstance(Context context) {
     if (instance == null) {
-      instance = new WexinComponent(context);
+      instance = new WeixinComponent(context);
     }
     return instance;
   }
 
-  private WexinComponent(Context context) {
+  private WeixinComponent(Context context) {
     this.context = context;
     this.wxapi = WXAPIFactory.createWXAPI(context, Constants.WEIXIN_APP_ID, true);
   }

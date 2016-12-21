@@ -10,12 +10,12 @@ import com.weibo.sns.LoginCallback;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.qq.QQComponent;
 import com.weibo.sns.sina.WeiboComponent;
-import com.weibo.sns.weixin.WexinComponent;
+import com.weibo.sns.weixin.WeixinComponent;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
   private WeiboComponent weiboComponent;
-  private WexinComponent wechatComponent;
+  private WeixinComponent wechatComponent;
   private QQComponent qqComponent;
 
   private BaseComponent component;
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     weiboComponent = new WeiboComponent(this, savedInstanceState);
-    wechatComponent = WexinComponent.getInstance(this);
+    wechatComponent = WeixinComponent.getInstance(this);
     qqComponent = new QQComponent(this);
   }
 
