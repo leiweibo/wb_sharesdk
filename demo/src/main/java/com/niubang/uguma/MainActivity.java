@@ -44,6 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.qq_img1).setOnClickListener(this);
     findViewById(R.id.qq_img2).setOnClickListener(this);
 
+    findViewById(R.id.qzone_image1).setOnClickListener(this);
+    findViewById(R.id.qzone_image2).setOnClickListener(this);
+    findViewById(R.id.qzone_url1).setOnClickListener(this);
+    findViewById(R.id.qzone_url2).setOnClickListener(this);
+
     findViewById(R.id.weibo_login).setOnClickListener(this);
     findViewById(R.id.weixin_login).setOnClickListener(this);
     findViewById(R.id.qq_login).setOnClickListener(this);
@@ -58,6 +63,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
   @Override public void onClick(View view) {
     login = false;
     switch (view.getId()) {
+
+      case R.id.qzone_url1: //图片为远程
+        platform = Constants.BIND_SOURCE_QZONE;
+        title = "QQZone分享标题";
+        summary = "QQZone分享概要";
+        content = "QQZone分享内容";
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_URL;
+        break;
+
+      case R.id.qzone_url2: //图片为本地, 需要把文件存入到本地，然后去做分享
+        platform = Constants.BIND_SOURCE_QZONE;
+        title = "QQZone分享标题-本地";
+        summary = "QQZone分享概要";
+        content = "QQZone分享内容";
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
+        break;
+
+      case R.id.qzone_image1: //纯图片发送，本地图片
+        platform = Constants.BIND_SOURCE_QZONE;
+        shareType = Constants.SHARE_IMG_LOCAL;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        break;
+
+      case R.id.qzone_image2: //纯图片发送，SDK支持
+        platform = Constants.BIND_SOURCE_QZONE;
+        shareType = Constants.SHARE_IMG_URL;
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        break;
+
+      ///////////////////////////////////
 
       case R.id.qq_url_1: //图片为远程
         platform = Constants.BIND_SOURCE_QQ;
@@ -85,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         break;
 
-      case R.id.qq_img2: //纯图片发送，SDK支持
+      case R.id.qq_img2: //纯图片发送，SDK不支持
         platform = Constants.BIND_SOURCE_QQ;
         shareType = Constants.SHARE_IMG_URL;
         imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";

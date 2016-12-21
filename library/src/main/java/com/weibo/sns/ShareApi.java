@@ -39,7 +39,7 @@ public class ShareApi {
     if (platform.equals(Constants.BIND_SOURCE_QQ)) {
       shareAction = new QQShareAction(context);
     } else if (platform.equals(Constants.BIND_SOURCE_QZONE)) {
-      shareAction = new QzoneShareAction();
+      shareAction = new QzoneShareAction(context);
     } else if (platform.equals(Constants.BIND_SOURCE_WEIXIN)) {
       shareAction = new WeixinShareAction(context);
     } else if (platform.equals(Constants.BIND_SOURCE_SINA)) {

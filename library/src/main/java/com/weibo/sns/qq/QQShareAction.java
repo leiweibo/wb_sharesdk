@@ -1,7 +1,6 @@
 package com.weibo.sns.qq;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import com.weibo.sns.Constants;
 import com.weibo.sns.ShareAction;
 
@@ -33,23 +32,5 @@ public class QQShareAction extends ShareAction {
         component.shareContent(title, summary, targetUrl, imageUrl);
         break;
     }
-  }
-
-  private void shareImage(String imageUrl) {
-    component.shareImage(imageUrl);
-  }
-
-  private void shareImage(Bitmap bitmap) {
-    component.shareImage(bitmap);
-  }
-
-  public void shareUrl(String title, String summary, String content, String targetUrl,
-      String image) {
-    component.shareContent(title, summary, targetUrl, image);
-  }
-
-  public void shsareUrl(String title, String summary, String content, String targetUrl,
-      Bitmap bitmap) {
-    component.shareContent(title, summary, targetUrl, bitmap);
   }
 }

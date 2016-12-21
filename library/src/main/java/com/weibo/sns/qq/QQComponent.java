@@ -182,6 +182,9 @@ public class QQComponent extends BaseComponent {
     Toast.makeText(context, "纯图片发送，目前支持本地图片分享", Toast.LENGTH_SHORT).show();
   }
 
+  /**
+   * 分享本地图片到QQ
+   */
   @Override public void shareImage(Bitmap image) {
     if (image != null) {
       BitmapHelper bitmapHelper = new BitmapHelper();
@@ -202,7 +205,7 @@ public class QQComponent extends BaseComponent {
   }
 
   /**
-   * 分享远程图片
+   * 分享远程图片到QQ
    *
    * @param title 标题
    * @param summary 概要
@@ -221,7 +224,7 @@ public class QQComponent extends BaseComponent {
   }
 
   /**
-   * 分享本地图片
+   * 本地图片分享到QQ
    *
    * @param title 标题
    * @param summary 概要
