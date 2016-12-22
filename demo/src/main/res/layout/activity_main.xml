@@ -20,29 +20,25 @@
         android:id="@+id/weibo_share_url1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:text="微博-网页1"/>
 
     <Button
         android:id="@+id/weibo_share_url2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
         android:text="微博-网页2"/>
 
     <Button
         android:id="@+id/weibo_share_img1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微博-图片"/>
+        android:text="微博-图片1"/>
 
     <Button
         android:id="@+id/weibo_share_img2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微博-图片"/>
+        android:text="微博-图片2"/>
   </LinearLayout>
 
   <LinearLayout android:id="@+id/weixin_layout"

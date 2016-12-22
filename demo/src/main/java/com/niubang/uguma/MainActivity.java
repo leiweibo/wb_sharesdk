@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.weixin_img1).setOnClickListener(this);
     findViewById(R.id.weixin_img2).setOnClickListener(this);
 
+    findViewById(R.id.weibo_share_url1).setOnClickListener(this);
+    findViewById(R.id.weibo_share_url2).setOnClickListener(this);
+    findViewById(R.id.weibo_share_img1).setOnClickListener(this);
+    findViewById(R.id.weibo_share_img2).setOnClickListener(this);
+
     findViewById(R.id.weixin_circle_url1).setOnClickListener(this);
     findViewById(R.id.weixin_circle_url2).setOnClickListener(this);
     findViewById(R.id.weixin_circle_img1).setOnClickListener(this);
@@ -204,6 +209,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         targetUrl = "http://www.qq.com/news/1.html";
         shareType = Constants.SHARE_URL_IMG_LOCAL;
         break;
+
+      case R.id.weibo_share_img1:
+        platform = Constants.BIND_SOURCE_SINA;
+        title = "Weibo分享标题-本地";
+        summary = "Weibo分享概要";
+        content = "Weibo分享内容";
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
+        break;
+
+
+      case R.id.weibo_share_img2:
+        platform = Constants.BIND_SOURCE_SINA;
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        shareType = Constants.SHARE_IMG_URL;
+        break;
+
+      case R.id.weibo_share_url1:
+        platform = Constants.BIND_SOURCE_SINA;
+        shareType = Constants.SHARE_IMG_LOCAL;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        break;
+
+      case R.id.weibo_share_url2:
+        platform = Constants.BIND_SOURCE_SINA;
+        title = "Weibo分享标题";
+        summary = "Weibo分享概要";
+        content = "Weibo分享内容";
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_URL;
+        break;
+
+
 
       /////////////////////////以下是登录
 
