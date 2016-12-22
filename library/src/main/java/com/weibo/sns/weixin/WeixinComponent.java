@@ -4,18 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.Toast;
-import com.tencent.mm.sdk.modelmsg.WXImageObject;
-import com.weibo.sns.BaseComponent;
-import com.weibo.sns.LoginCallback;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
-import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
 
-import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
+import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 
 /**
  * 微信登录和分享的组件
@@ -29,30 +23,25 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneTimeline;
  * Created by leiweibo on 12/15/16.
  */
 
-public class WeixinComponent extends BaseComponent {
-
-  private Context context;
-  private IWXAPI wxapi;
+public class WeixinComponent extends WeixinBaseComponent {
 
   private static WeixinComponent instance;
+
+  private WeixinComponent(Context context) {
+    this.context = context;
+    this.wxapi = WXAPIFactory.createWXAPI(context, SharePlatformConfig.getWeixinAppKey(), true);
+  }
 
   /**
    * 单例模式，之所以做成单例，是因为微信回调的时候，需要跟component进行通信，
    * 但是因为微信的特殊性，它发送了一个请求之后的事情都交给WXEntryActivity去处理，
    * 为了能保持代码一致性，在登录的时候，把接口注入，所以这里采用单例。
-   * @param context
-   * @return
    */
   public static WeixinComponent getInstance(Context context) {
     if (instance == null) {
       instance = new WeixinComponent(context);
     }
     return instance;
-  }
-
-  private WeixinComponent(Context context) {
-    this.context = context;
-    this.wxapi = WXAPIFactory.createWXAPI(context, SharePlatformConfig.getWeixinAppKey(), true);
   }
 
   /**
@@ -73,45 +62,6 @@ public class WeixinComponent extends BaseComponent {
     this.loginCallback = callback;
   }
 
-  /**
-   * 发送到微信功能，分享内容包括，要求用户手机必须安装微信客户端
-   */
-  public void share() {
-    WXTextObject textObject = new WXTextObject();
-    textObject.text = "这个是来自于微信分享的SDK";
-
-    WXImageObject wxImageObject = new WXImageObject();
-
-    WXMediaMessage msg = new WXMediaMessage();
-    msg.mediaObject = textObject;
-    msg.description = "这个是来自于微信分享的SDK";
-
-    SendMessageToWX.Req req = new SendMessageToWX.Req();
-    req.transaction = String.valueOf(System.currentTimeMillis());
-    req.message = msg;
-
-    wxapi.sendReq(req);
-  }
-
-  /**
-   * 分享到朋友圈
-   */
-  public void shareToWechat() {
-    WXTextObject textObject = new WXTextObject();
-    textObject.text = "这个是来自于微信分享的SDK";
-
-    WXMediaMessage msg = new WXMediaMessage();
-    msg.mediaObject = textObject;
-    msg.description = "这个是来自于微信分享的SDK";
-
-    SendMessageToWX.Req req = new SendMessageToWX.Req();
-    req.transaction = String.valueOf(System.currentTimeMillis());
-    req.scene = WXSceneTimeline;
-    req.message = msg;
-
-    wxapi.sendReq(req);
-  }
-
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
   }
@@ -120,20 +70,47 @@ public class WeixinComponent extends BaseComponent {
     return com.weibo.sns.Constants.BIND_SOURCE_WEIXIN;
   }
 
-  @Override public void shareImage(String imageUrl) {
-
+  /**
+   * 网络图片地址分享图片到微信
+   *
+   * @param imageUrl 图片的链接
+   */
+  @Override public void shareImage(final String imageUrl) {
+    shareImage(imageUrl, WXSceneSession);
   }
 
+  /**
+   * 本地图片分享图片到微信
+   *
+   * @param bitmap 本地图片被转化bitmap
+   */
   @Override public void shareImage(Bitmap bitmap) {
-
+    shareImage(bitmap, WXSceneSession);
   }
 
-
-  @Override public void shareContent(String title, String summary, String targetUrl, String image) {
-
+  /**
+   * 分享图文内容到微信，图片为远程图片
+   *
+   * @param title 标题
+   * @param summary 概要
+   * @param targetUrl url地址
+   * @param imageUrl 图片的url
+   */
+  @Override public void shareContent(final String title, final String summary,
+      final String targetUrl, final String imageUrl) {
+    shareContent(title, summary, targetUrl, imageUrl, WXSceneSession);
   }
 
-  @Override public void shareContent(String title, String summary, String targetUrl, Bitmap image) {
-
+  /**
+   * 分享图文内容到微信，图片为本地图片
+   *
+   * @param title 标题
+   * @param summary 概要
+   * @param targetUrl url地址
+   * @param bitmap 图片的bitmap
+   */
+  @Override public void shareContent(String title, String summary, String targetUrl,
+      Bitmap bitmap) {
+    shareContent(title, summary, targetUrl, bitmap, WXSceneSession);
   }
 }

@@ -41,6 +41,7 @@ public class Constants {
       + "invitation_write";
 
   public final static String BIND_SOURCE_WEIXIN = "weixin";
+  public final static String BIND_SOURCE_WEIXIN_CIRCLE = "weixin_circle";
   public final static String BIND_SOURCE_SINA = "weibo";
   public final static String BIND_SOURCE_QQ = "qq";
   public final static String BIND_SOURCE_QZONE = "qzone";

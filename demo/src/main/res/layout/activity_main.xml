@@ -50,49 +50,58 @@
       android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/weixin2"
+        android:id="@+id/weixin_url1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微信-图片"/>
+        android:text="微信-网页1"/>
 
     <Button
-        android:id="@+id/weixin3"
+        android:id="@+id/weixin_url2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微信-网页"/>
+        android:text="微信-网页2"/>
 
     <Button
-        android:id="@+id/weixin4"
+        android:id="@+id/weixin_img1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="微信-图文"/>
+        android:text="微信-图文1"/>
+
+
+
+    <Button
+        android:id="@+id/weixin_img2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="微信-图文2"/>
   </LinearLayout>
 
   <LinearLayout
       android:id="@+id/wechat_layout"
       android:layout_width="match_parent"
       android:layout_height="wrap_content">
+
     <Button
-        android:id="@+id/wechat2"
+        android:id="@+id/weixin_circle_url1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="PYQ-图片"/>
+        android:text="PYQ-URL1"/>
+
     <Button
-        android:id="@+id/wechat3"
+        android:id="@+id/weixin_circle_url2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="PYQ-网址"/>
+        android:text="PYQ-URL2"/>
     <Button
-        android:id="@+id/wechat4"
+        android:id="@+id/weixin_circle_img1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="PYQ-图文"/>
+        android:text="PYQ-图片1"/>
+    <Button
+        android:id="@+id/weixin_circle_img2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PYQ-图片2"/>
   </LinearLayout>
 
   <LinearLayout android:id="@+id/qq_layout"

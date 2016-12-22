@@ -49,6 +49,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     findViewById(R.id.qzone_url1).setOnClickListener(this);
     findViewById(R.id.qzone_url2).setOnClickListener(this);
 
+    findViewById(R.id.weixin_url1).setOnClickListener(this);
+    findViewById(R.id.weixin_url2).setOnClickListener(this);
+    findViewById(R.id.weixin_img1).setOnClickListener(this);
+    findViewById(R.id.weixin_img2).setOnClickListener(this);
+
+    findViewById(R.id.weixin_circle_url1).setOnClickListener(this);
+    findViewById(R.id.weixin_circle_url2).setOnClickListener(this);
+    findViewById(R.id.weixin_circle_img1).setOnClickListener(this);
+    findViewById(R.id.weixin_circle_img2).setOnClickListener(this);
+
     findViewById(R.id.weibo_login).setOnClickListener(this);
     findViewById(R.id.weixin_login).setOnClickListener(this);
     findViewById(R.id.qq_login).setOnClickListener(this);
@@ -128,6 +138,71 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         platform = Constants.BIND_SOURCE_QQ;
         shareType = Constants.SHARE_IMG_URL;
         imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        break;
+
+      case R.id.weixin_img1:
+        platform = Constants.BIND_SOURCE_WEIXIN;
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        shareType = Constants.SHARE_IMG_URL;
+        break;
+
+      case R.id.weixin_img2:
+        platform = Constants.BIND_SOURCE_WEIXIN;
+        shareType = Constants.SHARE_IMG_LOCAL;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        break;
+
+      case R.id.weixin_url1:
+        platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
+        title = "WX分享标题";
+        summary = "WX分享概要";
+        content = "WX分享内容";
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_URL;
+        break;
+
+      case R.id.weixin_url2:
+        platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
+        title = "WX分享标题-本地";
+        summary = "WX分享概要";
+        content = "WX分享内容";
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
+        break;
+
+
+      case R.id.weixin_circle_img1:
+        platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        shareType = Constants.SHARE_IMG_URL;
+        break;
+
+      case R.id.weixin_circle_img2:
+        platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
+        shareType = Constants.SHARE_IMG_LOCAL;
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        break;
+
+      case R.id.weixin_circle_url1:
+        platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
+        title = "WX分享标题";
+        summary = "WX分享概要";
+        content = "WX分享内容";
+        imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_URL;
+        break;
+
+      case R.id.weixin_circle_url2:
+        platform = Constants.BIND_SOURCE_WEIXIN;
+        title = "WX分享标题-本地";
+        summary = "WX分享概要";
+        content = "WX分享内容";
+        bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
         break;
 
       /////////////////////////以下是登录

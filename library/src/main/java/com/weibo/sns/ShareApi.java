@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.weibo.sns.qq.QQShareAction;
 import com.weibo.sns.qq.QzoneShareAction;
 import com.weibo.sns.sina.WeiboShareAction;
+import com.weibo.sns.weixin.WeixinCircleShareAction;
 import com.weibo.sns.weixin.WeixinShareAction;
 
 /**
@@ -29,11 +30,9 @@ public class ShareApi {
   }
 
   /**
-   *
    * @param context 上下文
    * @param platform 对应的平台
    * @param savedInstance Activity的savedInstance 只有新浪需要用到
-   * @return
    */
   public ShareApi platform(Context context, String platform, Bundle savedInstance) {
     if (platform.equals(Constants.BIND_SOURCE_QQ)) {
@@ -42,18 +41,20 @@ public class ShareApi {
       shareAction = new QzoneShareAction(context);
     } else if (platform.equals(Constants.BIND_SOURCE_WEIXIN)) {
       shareAction = new WeixinShareAction(context);
+    } else if (platform.equals(Constants.BIND_SOURCE_WEIXIN_CIRCLE)) {
+      shareAction = new WeixinCircleShareAction(context);
     } else if (platform.equals(Constants.BIND_SOURCE_SINA)) {
       shareAction = new WeiboShareAction(context, savedInstance);
     }
     return this;
   }
 
-
   public ShareApi withShareType(int shareType) {
     checkShareActionNull();
     shareAction.shareType(shareType);
     return this;
   }
+
   /**
    * 分享文字
    *
@@ -127,7 +128,6 @@ public class ShareApi {
 
   /**
    * 分享 并且把对应的component返回
-   * @return
    */
   public BaseComponent share() {
     if (shareAction != null) {

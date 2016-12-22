@@ -8,10 +8,12 @@ import com.weibo.sns.ShareAction;
  * Created by leiweibo on 12/21/16.
  */
 
-public class WeixinShareAction extends ShareAction {
-  public WeixinShareAction(Context context) {
-    component = WeixinComponent.getInstance(context);
+public class WeixinCircleShareAction extends ShareAction {
+
+  public WeixinCircleShareAction(Context context) {
+    component = WeiXinCircleComponent.getInstance(context);
   }
+
   @Override public void share() {
     switch (shareType) {
       case Constants.SHARE_IMG_LOCAL:
