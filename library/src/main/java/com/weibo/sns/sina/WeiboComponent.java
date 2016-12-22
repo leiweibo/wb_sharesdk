@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 import com.sina.weibo.sdk.api.ImageObject;
+import com.sina.weibo.sdk.api.TextObject;
 import com.sina.weibo.sdk.api.WebpageObject;
 import com.sina.weibo.sdk.api.WeiboMultiMessage;
 import com.sina.weibo.sdk.api.share.BaseResponse;
@@ -172,8 +173,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
 
   private void checkWeiboShareAPI() {
     if (weiboShareAPI == null) {
-      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, Constants.WEIBO_APP_KEY);
-
+      weiboShareAPI = WeiboShareSDK.createWeiboAPI(context, SharePlatformConfig.getSinaAppKey());
       /*
        * 注册第三方应用到微博客户端中，注册成功后该应用将显示在微博的应用列表中。
        * NOTE：请务必提前注册，即界面初始化的时候或是应用程序初始化时，进行注册
@@ -223,6 +223,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
     imageObject.setImageObject(bitmap);
     weiboMultiMessage.imageObject = imageObject;
+    imageObject.description = "这个是description 字段";
 
     SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
     request.transaction = String.valueOf(System.currentTimeMillis());
@@ -259,17 +260,26 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
       token = accessToken.getToken();
     }
 
+    TextObject textObject = new TextObject();
+    textObject.text = title;
+    textObject.description = summary;
+
     WebpageObject mediaObject = new WebpageObject();
     mediaObject.identify = Utility.generateGUID();
     mediaObject.title = title;
     mediaObject.description = summary;
     // 设置 Bitmap 类型的图片到视频对象里
     // 设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    //mediaObject.setThumbImage(bitmap);
+    mediaObject.setThumbImage(image);
     mediaObject.actionUrl = targetUrl;
-    mediaObject.defaultText = "defaultText Webpage 默认文案";
     WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
     weiboMultiMessage.mediaObject = mediaObject;
+    weiboMultiMessage.textObject = textObject;
+
+    ImageObject imageObject = new ImageObject();
+    //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+    imageObject.setImageObject(image);
+    weiboMultiMessage.imageObject = imageObject;
 
     SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
     request.transaction = String.valueOf(System.currentTimeMillis());

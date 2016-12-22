@@ -212,12 +212,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
       case R.id.weibo_share_img1:
         platform = Constants.BIND_SOURCE_SINA;
-        title = "Weibo分享标题-本地";
-        summary = "Weibo分享概要";
-        content = "Weibo分享内容";
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        targetUrl = "http://www.qq.com/news/1.html";
-        shareType = Constants.SHARE_URL_IMG_LOCAL;
+
+        shareType = Constants.SHARE_IMG_LOCAL;
         break;
 
 
@@ -229,7 +226,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
       case R.id.weibo_share_url1:
         platform = Constants.BIND_SOURCE_SINA;
-        shareType = Constants.SHARE_IMG_LOCAL;
+        title = "Weibo分享标题-图片本地";
+        summary = "Weibo分享概要";
+        content = "Weibo分享内容";
+        targetUrl = "http://www.qq.com/news/1.html";
+        shareType = Constants.SHARE_URL_IMG_LOCAL;
         bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
         break;
 
