@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.Toast;
+import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.weibo.sns.BaseComponent;
 import com.weibo.sns.LoginCallback;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
@@ -78,6 +79,8 @@ public class WeixinComponent extends BaseComponent {
   public void share() {
     WXTextObject textObject = new WXTextObject();
     textObject.text = "这个是来自于微信分享的SDK";
+
+    WXImageObject wxImageObject = new WXImageObject();
 
     WXMediaMessage msg = new WXMediaMessage();
     msg.mediaObject = textObject;

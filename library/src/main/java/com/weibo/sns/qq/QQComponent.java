@@ -13,14 +13,21 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.weibo.sns.BaseComponent;
-import com.weibo.sns.BitmapHelper;
 import com.weibo.sns.Constants;
+import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.Util;
+import java.io.File;
+import java.io.IOException;
 import org.json.JSONException;
 import org.json.JSONObject;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 import static com.tencent.connect.common.Constants.ACTIVITY_OK;
 import static com.tencent.connect.common.Constants.PARAM_ACCESS_TOKEN;
@@ -187,20 +194,33 @@ public class QQComponent extends BaseComponent {
    */
   @Override public void shareImage(Bitmap image) {
     if (image != null) {
-      BitmapHelper bitmapHelper = new BitmapHelper();
-      bitmapHelper.saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
-        @Override public void onFailed() {
-          Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
-        }
+      Observable.just(image)
+          .observeOn(Schedulers.io())
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .map(new Func1<Bitmap, String>() {
+            @Override public String call(Bitmap bitmap) {
+              try {
+                DiskCacheUtil diskCacheUtil = new DiskCacheUtil(context);
+                File file =
+                    diskCacheUtil.writeLocalBitMapToCache(bitmap, System.currentTimeMillis() + "");
+                return file.getAbsolutePath();
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+              return null;
+            }
+          })
+          .subscribe(new Action1<String>() {
+            @Override public void call(String path) {
+              if (path != null) {
+                final Bundle params = new Bundle();
+                params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
 
-        @Override public void onComplete(String path) {
-          final Bundle params = new Bundle();
-          params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
-          params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
-
-          tencent.shareToQQ((Activity) context, params, buildShareListener());
-        }
-      });
+                tencent.shareToQQ((Activity) context, params, buildShareListener());
+              }
+            }
+          });
     }
   }
 
@@ -235,23 +255,37 @@ public class QQComponent extends BaseComponent {
       final String targetUrl, final Bitmap image) {
 
     if (image != null) {
-      BitmapHelper bitmapHelper = new BitmapHelper();
-      bitmapHelper.saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
-        @Override public void onFailed() {
-          Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
-        }
 
-        @Override public void onComplete(String path) {
-          final Bundle params = new Bundle();
-          params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-          params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
-          params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
-          params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
-          params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
+      Observable.just(image)
+          .observeOn(Schedulers.io())
+          .subscribeOn(AndroidSchedulers.mainThread())
+          .map(new Func1<Bitmap, String>() {
+            @Override public String call(Bitmap bitmap) {
+              try {
+                DiskCacheUtil diskCacheUtil = new DiskCacheUtil(context);
+                File file =
+                    diskCacheUtil.writeLocalBitMapToCache(bitmap, System.currentTimeMillis() + "");
+                return file.getAbsolutePath();
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+              return null;
+            }
+          })
+          .subscribe(new Action1<String>() {
+            @Override public void call(String path) {
+              if (path != null) {
+                final Bundle params = new Bundle();
+                params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+                params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+                params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+                params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
+                params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
 
-          tencent.shareToQQ((Activity) context, params, buildShareListener());
-        }
-      });
+                tencent.shareToQQ((Activity) context, params, buildShareListener());
+              }
+            }
+          });
     } else {
       final Bundle params = new Bundle();
       params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);

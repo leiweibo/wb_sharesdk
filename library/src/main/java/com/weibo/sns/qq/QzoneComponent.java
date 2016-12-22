@@ -11,7 +11,6 @@ import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
 import com.weibo.sns.BaseComponent;
-import com.weibo.sns.BitmapHelper;
 import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
@@ -52,6 +51,7 @@ public class QzoneComponent extends BaseComponent {
 
   /**
    * SDK不支持
+   *
    * @param imageUrl 图片的链接
    */
   @Override public void shareImage(String imageUrl) {
@@ -65,36 +65,31 @@ public class QzoneComponent extends BaseComponent {
 
   /**
    * SDK不支持
-   * @param image
    */
   @Override public void shareImage(Bitmap image) {
-    if (image != null) {
-      BitmapHelper bitmapHelper = new BitmapHelper();
-      bitmapHelper.saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
-        @Override public void onFailed() {
-          Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override public void onComplete(String path) {
-          final Bundle params = new Bundle();
-          params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE);
-          params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
-
-          tencent.shareToQzone((Activity) context, params, buildShareListener());
-        }
-      });
-    }
+    //if (image != null) {
+    //  ImageHelper bitmapHelper = new ImageHelper();
+    //  bitmapHelper.saveBitmapToDisk(image, new ImageHelper.ImageSaveCallback() {
+    //    @Override public void onFailed() {
+    //      Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+    //    }
+    //
+    //    @Override public void onComplete(String path) {
+    //      final Bundle params = new Bundle();
+    //      params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE);
+    //      params.putString(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
+    //
+    //      tencent.shareToQzone((Activity) context, params, buildShareListener());
+    //    }
+    //  });
+    //}
   }
 
   /**
    * 分享网络图片到QQ空间
-   * @param title
-   * @param summary
-   * @param targetUrl
-   * @param imageUrl
    */
-  @Override
-  public void shareContent(String title, String summary, String targetUrl, String imageUrl) {
+  @Override public void shareContent(String title, String summary, String targetUrl,
+      String imageUrl) {
     Bundle params = new Bundle();
     params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
     params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
@@ -109,33 +104,29 @@ public class QzoneComponent extends BaseComponent {
   /**
    * TODO 尚未调试通过
    * 分享本地图片到QQ空间 （有问题）
-   * @param title
-   * @param summary
-   * @param targetUrl
-   * @param image
    */
-  @Override
-  public void shareContent(final String title, final String summary, final String targetUrl,
-      final Bitmap image) {
+  @Override public void shareContent(final String title, final String summary,
+      final String targetUrl, final Bitmap image) {
 
-    new BitmapHelper().saveBitmap(image, new BitmapHelper.ImageSaveCallback() {
-      @Override public void onFailed() {
-
-      }
-
-      @Override public void onComplete(String path) {
-        Bundle params = new Bundle();
-        params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,
-            QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
-        params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
-        params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, summary);//选填
-        params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, targetUrl);//必填
-        ArrayList<String> images = new ArrayList<String>();
-        images.add(path);
-        params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, images);
-        tencent.shareToQzone((Activity) context, params, buildShareListener());
-      }
-    });
+    //Observable<Bit>
+    //new ImageHelper().saveBitmapToDisk(image, new ImageHelper.ImageSaveCallback() {
+    //  @Override public void onFailed() {
+    //
+    //  }
+    //
+    //  @Override public void onComplete(String path) {
+    //    Bundle params = new Bundle();
+    //    params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE,
+    //        QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE_TEXT);
+    //    params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
+    //    params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, summary);//选填
+    //    params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, targetUrl);//必填
+    //    ArrayList<String> images = new ArrayList<String>();
+    //    images.add(path);
+    //    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, images);
+    //    tencent.shareToQzone((Activity) context, params, buildShareListener());
+    //  }
+    //});
   }
 
   private IUiListener buildShareListener() {
