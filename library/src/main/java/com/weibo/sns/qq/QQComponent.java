@@ -43,9 +43,9 @@ import static com.tencent.connect.common.Constants.REQUEST_QQ_SHARE;
  */
 
 public class QQComponent extends BaseComponent {
-  private final String SCOPE = "all";
-  private final String PARAM_ICON_URL = "figureurl_qq_2";
-  private final String PARAM_NICK_NAME = "nickname";
+  private static final String SCOPE = "all";
+  private static final String PARAM_ICON_URL = "figureurl_qq_2";
+  private static final String PARAM_NICK_NAME = "nickname";
 
   private Context context;
   private Tencent tencent;
@@ -91,7 +91,7 @@ public class QQComponent extends BaseComponent {
           return;
         }
         JSONObject jsonResponse = (JSONObject) response;
-        if (null != jsonResponse && jsonResponse.length() == 0) {
+        if (jsonResponse.length() == 0) {
           Util.showResultDialog(context, "返回为空", "登录失败");
           return;
         }

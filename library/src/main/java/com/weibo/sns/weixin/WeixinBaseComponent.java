@@ -25,7 +25,7 @@ public abstract class WeixinBaseComponent extends BaseComponent {
 
   protected IWXAPI wxapi;
   protected Context context;
-  private final int THUMB_SIZE = 150;
+  private final static int THUMB_SIZE = 150;
 
   /**
    * 分享图文内容到微信 或者 朋友圈，图片为本地图片

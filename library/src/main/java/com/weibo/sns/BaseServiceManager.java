@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public abstract class BaseServiceManager {
 
-  private final int DEFAULT_TIME = 5;
+  private final static int DEFAULT_TIME = 5;
   protected Retrofit retrofit;
 
   public BaseServiceManager() {

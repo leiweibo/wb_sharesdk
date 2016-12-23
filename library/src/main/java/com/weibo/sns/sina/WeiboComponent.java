@@ -196,7 +196,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     Observable.just(imageUrl).observeOn(Schedulers.io()).map(new Func1<String, Bitmap>() {
       @Override public Bitmap call(String s) {
         DiskCacheUtil diskCacheUtil = new DiskCacheUtil(context);
-        Bitmap bitmap = diskCacheUtil.getBitmapFromURL(s);
+        bitmap = diskCacheUtil.getBitmapFromURL(s);
         return bitmap;
       }
     }).subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Bitmap>() {

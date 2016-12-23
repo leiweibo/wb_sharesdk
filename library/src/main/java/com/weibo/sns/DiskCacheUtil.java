@@ -39,7 +39,7 @@ public class DiskCacheUtil {
   //缓存文件是否创建
   private boolean mIsDiskLruCacheCreated = false;
 
-  private final String DISK_CACHE = "diskcache";
+  private final static String DISK_CACHE = "diskcache";
 
   public DiskCacheUtil(Context context) {
     mContext = context.getApplicationContext();

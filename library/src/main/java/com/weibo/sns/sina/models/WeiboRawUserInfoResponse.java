@@ -19,8 +19,7 @@ public class WeiboRawUserInfoResponse {
    * @return UserInfoResponse
    */
   public UserInfoResponse converToUserInfo() {
-    UserInfoResponse userInfoResponse =
-        new UserInfoResponse(Constants.BIND_SOURCE_SINA, id, nickName, avatarUrl);
-    return userInfoResponse;
+
+    return new UserInfoResponse(Constants.BIND_SOURCE_SINA, id, nickName, avatarUrl);
   }
 }

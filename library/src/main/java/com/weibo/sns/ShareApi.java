@@ -132,8 +132,8 @@ public class ShareApi {
   public BaseComponent share() {
     if (shareAction != null) {
       shareAction.share();
+      return shareAction.component;
     }
-
-    return shareAction.component;
+    return null;
   }
 }

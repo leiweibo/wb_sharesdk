@@ -48,10 +48,8 @@ public class WeixinComponent extends WeixinBaseComponent {
    * 微信的登录功能，要求用户手机必须安装微信客户端
    */
   public void login(LoginCallback callback) {
-
-    wxapi.registerApp(SharePlatformConfig.getWeixinAppKey());
-
     if (wxapi != null && wxapi.isWXAppInstalled()) {
+      wxapi.registerApp(SharePlatformConfig.getWeixinAppKey());
       SendAuth.Req req = new SendAuth.Req();
       req.scope = "snsapi_userinfo";
       req.state = "wechat_sdk_demo_test_neng";
