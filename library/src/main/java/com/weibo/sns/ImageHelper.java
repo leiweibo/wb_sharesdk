@@ -1,4 +1,4 @@
-//package com.weibo.sns;
+package com.weibo.sns;//package com.weibo.sns;
 //
 //import android.content.Context;
 //import android.graphics.Bitmap;

@@ -281,9 +281,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     } else {
       runOnUiThread(new Runnable() {
         @Override public void run() {
-          component = ShareApi.getInstance()
-              .platform(MainActivity.this, platform, savedInstance)
-              .withTitle(title)
+          ShareApi shareApi = ShareApi.getInstance()
+              .platform(MainActivity.this, platform, savedInstance);
+
+          shareApi.withTitle(title)
               .withShareType(shareType)
               .withSummary(summary)
               .withContent(content)
@@ -291,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
               .withImageUrl(imageUrl)
               .withTargetUrl(targetUrl)
               .share();
+          component = shareApi.getComponent();
         }
       });
 

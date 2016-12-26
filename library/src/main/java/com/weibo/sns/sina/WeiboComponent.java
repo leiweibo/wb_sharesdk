@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 import com.sina.weibo.sdk.api.ImageObject;
@@ -168,7 +169,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   }
 
   @Override protected String getSource() {
-    return com.weibo.sns.Constants.BIND_SOURCE_SINA;
+    return Constants.BIND_SOURCE_SINA;
   }
 
   private void checkWeiboShareAPI() {
@@ -270,16 +271,22 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     mediaObject.description = summary;
     // 设置 Bitmap 类型的图片到视频对象里
     // 设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    mediaObject.setThumbImage(image);
-    mediaObject.actionUrl = targetUrl;
+    if (image != null) {
+      mediaObject.setThumbImage(image);
+    }
+    if (!TextUtils.isEmpty(targetUrl)) {
+      mediaObject.actionUrl = targetUrl;
+    }
     WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
     weiboMultiMessage.mediaObject = mediaObject;
     weiboMultiMessage.textObject = textObject;
 
-    ImageObject imageObject = new ImageObject();
-    //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    imageObject.setImageObject(image);
-    weiboMultiMessage.imageObject = imageObject;
+    if (bitmap != null) {
+      ImageObject imageObject = new ImageObject();
+      //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
+      imageObject.setImageObject(image);
+      weiboMultiMessage.imageObject = imageObject;
+    }
 
     SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
     request.transaction = String.valueOf(System.currentTimeMillis());
@@ -332,6 +339,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
       }
 
       @Override public void onCancel() {
+        Toast.makeText(context, "分享取消", Toast.LENGTH_LONG).show();
       }
     };
 

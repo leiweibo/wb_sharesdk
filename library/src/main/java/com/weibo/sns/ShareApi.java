@@ -129,9 +129,14 @@ public class ShareApi {
   /**
    * 分享 并且把对应的component返回
    */
-  public BaseComponent share() {
+  public void share() {
     if (shareAction != null) {
       shareAction.share();
+    }
+  }
+
+  public BaseComponent getComponent() {
+    if (shareAction != null) {
       return shareAction.component;
     }
     return null;

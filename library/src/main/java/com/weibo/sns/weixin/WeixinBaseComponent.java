@@ -49,9 +49,11 @@ public abstract class WeixinBaseComponent extends BaseComponent {
     WXMediaMessage msg = new WXMediaMessage(webpageObject);
     msg.title = title;
     msg.description = summary;
-    Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
-    bitmap.recycle();
-    msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+    if (bitmap != null) {
+      Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
+      bitmap.recycle();
+      msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+    }
     req.message = msg;
 
     wxapi.sendReq(req);

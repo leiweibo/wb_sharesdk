@@ -23,4 +23,17 @@ public class UserInfoResponse implements Serializable {
   @Override public String toString() {
     return "sns:" + snsKind + ", uId:" + uid + ", nickName:" + nickname + ", icon:" + imageUrl;
   }
+
+  public String getUid() {
+    return uid;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
+  }
+
 }

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.widget.Toast;
 import com.tencent.connect.share.QQShare;
 import com.tencent.connect.share.QzoneShare;
@@ -15,6 +17,7 @@ import com.weibo.sns.BaseComponent;
 import com.weibo.sns.Constants;
 import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
+import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
 import java.io.File;
 import java.io.IOException;
@@ -60,23 +63,26 @@ public class QzoneComponent extends BaseComponent {
   }
 
   /**
-   * SDK不支持, 只支持图文类型
+   * SDK不支持, 它只支持图文类型，这里通过QQ绕过去
    *
    * @param imageUrl 图片的链接
    */
-  @Deprecated @Override public void shareImage(String imageUrl) {
+  @Override public void shareImage(String imageUrl) {
     final Bundle params = new Bundle();
-    params.putInt(QzoneShare.SHARE_TO_QZONE_KEY_TYPE, QzoneShare.SHARE_TO_QZONE_TYPE_IMAGE);
+    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
     ArrayList<String> imgUrls = new ArrayList<>();
     imgUrls.add(imageUrl);
-    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, imgUrls);
-    tencent.shareToQzone((Activity) context, params, buildShareListener());
+    params.putStringArrayList(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, imgUrls);
+    //打开这句话，可以实现分享纯图到QQ空间
+    params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
+    tencent.shareToQQ((Activity) context, params, buildShareListener());
   }
 
   /**
-   * SDK不支持, 只支持图文类型
+   * 本身QQ空间的SDK不支持, 它只支持图文类型，这里通过QQ绕过去
+   * @param image 本地图片
    */
-  @Deprecated @Override public void shareImage(Bitmap image) {
+  @Override public void shareImage(Bitmap image) {
     Observable.just(image)
         .observeOn(Schedulers.io())
         .subscribeOn(AndroidSchedulers.mainThread())
@@ -99,8 +105,10 @@ public class QzoneComponent extends BaseComponent {
               final Bundle params = new Bundle();
               params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_IMAGE);
               params.putString(QQShare.SHARE_TO_QQ_IMAGE_LOCAL_URL, path);
+              //打开这句话，可以实现分享纯图到QQ空间
+              params.putInt(QQShare.SHARE_TO_QQ_EXT_INT, QQShare.SHARE_TO_QQ_FLAG_QZONE_AUTO_OPEN);
 
-              tencent.shareToQzone((Activity) context, params, buildShareListener());
+              tencent.shareToQQ((Activity) context, params, buildShareListener());
             }
           }
         });
@@ -116,10 +124,17 @@ public class QzoneComponent extends BaseComponent {
     params.putString(QzoneShare.SHARE_TO_QQ_TITLE, title);//必填
     params.putString(QzoneShare.SHARE_TO_QQ_SUMMARY, summary);//选填
     params.putString(QzoneShare.SHARE_TO_QQ_TARGET_URL, targetUrl);//必填
-    ArrayList<String> urls = new ArrayList<>();
-    urls.add(imageUrl);
-    params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urls);
-    tencent.shareToQzone((Activity) context, params, buildShareListener());
+    //如果图片为空，则用本地的appicon作为图标
+    if (!TextUtils.isEmpty(imageUrl)) {
+      ArrayList<String> urls = new ArrayList<>();
+      urls.add(imageUrl);
+      params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urls);
+      tencent.shareToQzone((Activity) context, params, buildShareListener());
+    } else {
+      Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+      shareContent(title, summary, targetUrl, bitmap);
+    }
+
   }
 
   /**
@@ -170,7 +185,7 @@ public class QzoneComponent extends BaseComponent {
   private IUiListener buildShareListener() {
     IUiListener uiListener = new IUiListener() {
       @Override public void onComplete(Object o) {
-        Toast.makeText(context, "分享完成", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "分享成功", Toast.LENGTH_SHORT).show();
       }
 
       @Override public void onError(UiError uiError) {

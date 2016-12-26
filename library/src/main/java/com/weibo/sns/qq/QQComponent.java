@@ -172,7 +172,7 @@ public class QQComponent extends BaseComponent {
     if ((requestCode == REQUEST_LOGIN || requestCode == REQUEST_API) && resultCode == ACTIVITY_OK) {
       tencent.onActivityResultData(requestCode, resultCode, data, qqRequestListener);
     } else if (requestCode == REQUEST_QQ_SHARE) {
-      Tencent.onActivityResultData(requestCode, resultCode, data, qqRequestListener);
+      Tencent.onActivityResultData(requestCode, resultCode, data, buildShareListener());
     }
   }
 
@@ -300,7 +300,7 @@ public class QQComponent extends BaseComponent {
   private IUiListener buildShareListener() {
     IUiListener uiListener = new IUiListener() {
       @Override public void onComplete(Object o) {
-        Toast.makeText(context, "分享完成", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "分享成功", Toast.LENGTH_SHORT).show();
       }
 
       @Override public void onError(UiError uiError) {

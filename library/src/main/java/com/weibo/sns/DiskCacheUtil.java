@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.util.Log;
 import com.jakewharton.disklrucache.DiskLruCache;
 import java.io.BufferedInputStream;
@@ -163,6 +164,9 @@ public class DiskCacheUtil {
    * @param url 图片的URL
    */
   private String hashKeyFormUrl(String url) {
+    if (TextUtils.isEmpty(url)) {
+      return null;
+    }
     String cacheKey;
     try {
       final MessageDigest mDigest = MessageDigest.getInstance("MD5");
@@ -203,7 +207,7 @@ public class DiskCacheUtil {
     if (Looper.myLooper() == Looper.getMainLooper()) {
       throw new RuntimeException("can not visit network from UI Thread.");
     }
-    if (mDiskCache == null) {
+    if (TextUtils.isEmpty(url) || mDiskCache == null) {
       return null;
     }
 
@@ -279,7 +283,7 @@ public class DiskCacheUtil {
       Log.w("DiskLruCache", "load bitmap from UI Thread, it's not recommended!");
     }
     //如果缓存中为空  直接返回为空
-    if (mDiskCache == null) {
+    if (mDiskCache == null || TextUtils.isEmpty(url)) {
       return null;
     }
 
