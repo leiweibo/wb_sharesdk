@@ -57,7 +57,7 @@ public class LoginApi {
     } else if (platform.equals(Constants.BIND_SOURCE_WEIXIN)) {
       component = WeixinComponent.getInstance(context);
     } else if (platform.equals(Constants.BIND_SOURCE_SINA)) {
-      component = new WeiboComponent(context, savedInstance);
+      component = WeiboComponent.getInstance(context, savedInstance);
     }
     return this;
   }

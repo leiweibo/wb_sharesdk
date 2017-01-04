@@ -2,6 +2,7 @@ package com.weibo.sns.weixin;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -9,6 +10,7 @@ import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.weibo.sns.BaseComponent;
 import com.weibo.sns.DiskCacheUtil;
+import com.weibo.sns.Util;
 import java.io.ByteArrayOutputStream;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -24,7 +26,7 @@ import rx.schedulers.Schedulers;
 public abstract class WeixinBaseComponent extends BaseComponent {
 
   protected IWXAPI wxapi;
-  protected Context context;
+  protected static Context context;
   private final static int THUMB_SIZE = 150;
 
   /**
@@ -82,17 +84,21 @@ public abstract class WeixinBaseComponent extends BaseComponent {
    */
   protected void shareContent(final String title, final String summary, final String targetUrl,
       final String imageUrl, final int target) {
-    Observable.just(imageUrl).observeOn(Schedulers.io()).map(new Func1<String, Bitmap>() {
-      @Override public Bitmap call(String s) {
-        DiskCacheUtil diskCacheUtil = new DiskCacheUtil(context);
-        Bitmap bitmap = diskCacheUtil.getBitmapFromURL(s);
-        return bitmap;
-      }
-    }).subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Bitmap>() {
-      @Override public void call(Bitmap bitmap) {
-        shareContent(title, summary, targetUrl, bitmap, target);
-      }
-    });
+    if (TextUtils.isEmpty(imageUrl)) {
+      shareContent(title, summary, targetUrl, Util.getDefaultBitmap(context), target);
+    } else {
+      Observable.just(imageUrl).observeOn(Schedulers.io()).map(new Func1<String, Bitmap>() {
+        @Override public Bitmap call(String s) {
+          DiskCacheUtil diskCacheUtil = new DiskCacheUtil(context);
+          Bitmap bitmap = diskCacheUtil.getBitmapFromURL(s);
+          return bitmap;
+        }
+      }).subscribeOn(AndroidSchedulers.mainThread()).subscribe(new Action1<Bitmap>() {
+        @Override public void call(Bitmap bitmap) {
+          shareContent(title, summary, targetUrl, bitmap, target);
+        }
+      });
+    }
   }
 
   /**

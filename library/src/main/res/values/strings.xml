@@ -1,3 +1,19 @@
 <resources>
   <string name="app_name">niubang-sharesdk</string>
+  <string name="errcode_success">分享成功</string>
+  <string name="errcode_cancel">分享取消</string>
+  <string name="errcode_deny">分享被拒绝</string>
+  <string name="errcode_unknown">分享返回</string>
+
+  <string name="authorize_cancel">%1$s取消</string>
+  <string name="authorize_success">%1$s成功</string>
+  <string name="authorize_failed">%1$s失败</string>
+
+  <string name="authorize_cancel_full">授权取消</string>
+  <string name="authorize_success_full">授权成功</string>
+  <string name="authorize_failed_full">授权失败</string>
+
+  <string name="share_cancel_full">分享取消</string>
+  <string name="share_success_full">分享成功</string>
+  <string name="share_failed_full">分享失败</string>
 </resources>

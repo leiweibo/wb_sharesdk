@@ -1,7 +1,11 @@
 package com.weibo.sns;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
@@ -43,5 +47,50 @@ public class Util {
       }
     });
   }
+
+  /**
+   * 打印消息并且用Toast显示消息
+   *
+   * @param activity
+   * @param msgRes: 消息的resource id
+   */
+  public static final void toastMessage(final Context activity,
+      final int msgRes) {
+    String message = activity.getString(msgRes);
+    toastMessage(activity, message);
+  }
+
+  public static Bitmap getDefaultBitmap(Context context) {
+    Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+    return bitmap;
+  }
+
+  /**
+   * 显示自定义信息进度条
+   *
+   * @param message 要显示的信息内容
+   */
+  protected static ProgressDialog progressDialog;
+  public static void showProgressDialog(Context context, String message) {
+    createProgressDialog(context);
+    progressDialog.setMessage(message);
+    if (!progressDialog.isShowing()) {
+      progressDialog.show();
+    }
+  }
+
+  public static void dismissProgressDialog() {
+    if (progressDialog != null) {
+      progressDialog.dismiss();
+    }
+  }
+
+  private static void createProgressDialog(Context context) {
+    progressDialog = new ProgressDialog(context);
+    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    progressDialog.setMessage("正在加载，请稍等...");
+    progressDialog.setCancelable(true);
+  }
+
 }
 

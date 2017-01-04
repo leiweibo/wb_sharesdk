@@ -8,6 +8,7 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.Util;
 
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 
@@ -33,13 +34,17 @@ public class WeixinComponent extends WeixinBaseComponent {
   }
 
   /**
-   * 单例模式，之所以做成单例，是因为微信回调的时候，需要跟component进行通信，
+   * 特殊的单例模式，之所以做成单例，是因为微信回调的时候，需要跟component进行通信，
    * 但是因为微信的特殊性，它发送了一个请求之后的事情都交给WXEntryActivity去处理，
-   * 为了能保持代码一致性，在登录的时候，把接口注入，所以这里采用单例。
+   * 为了能保持代码一致性，在登录的时候，把接口注入，所以这里采用单例。为了不让这个单例一直持有
+   * 某一个activity的引用，所以判断getInstance里面传过来的context跟已存在的context不相等的时候，
+   * 重新new一个实例
    */
-  public static WeixinComponent getInstance(Context context) {
+  public static WeixinComponent getInstance(Context context1) {
     if (instance == null) {
-      instance = new WeixinComponent(context);
+      instance = new WeixinComponent(context1);
+    } else if ((context != null) && context !=  context1) {
+      context = context1;
     }
     return instance;
   }
@@ -49,6 +54,7 @@ public class WeixinComponent extends WeixinBaseComponent {
    */
   public void login(LoginCallback callback) {
     if (wxapi != null && wxapi.isWXAppInstalled()) {
+      Util.showProgressDialog(context, "登录中");
       wxapi.registerApp(SharePlatformConfig.getWeixinAppKey());
       SendAuth.Req req = new SendAuth.Req();
       req.scope = "snsapi_userinfo";

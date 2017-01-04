@@ -12,7 +12,7 @@ import com.weibo.sns.ShareAction;
 public class WeiboShareAction extends ShareAction {
 
   public WeiboShareAction(Context context, Bundle savedInstance) {
-    component = new WeiboComponent(context, savedInstance);
+    component = WeiboComponent.getInstance(context, savedInstance);
   }
   @Override public void share() {
     switch (shareType) {

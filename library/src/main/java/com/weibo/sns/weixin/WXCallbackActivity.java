@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
+import com.weibo.sns.Util;
 import com.weibo.sns.weixin.models.AccessTokenResponse;
 import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.weixin.models.WeiXinRawUserInfoResponse;
@@ -59,30 +61,34 @@ public class WXCallbackActivity extends Activity implements IWXAPIEventHandler {
    */
   @Override public void onResp(BaseResp resp) {
 
+    int result = 0;
+    String action = "操作";
     if (resp instanceof SendAuth.Resp) {
-      startRxCall(((SendAuth.Resp) resp).code);
-    } else {
-      String result = "";
-
-      switch (resp.errCode) {
-        case BaseResp.ErrCode.ERR_OK:
-          result ="分享成功";
-          break;
-        case BaseResp.ErrCode.ERR_USER_CANCEL:
-          result = "分享取消";
-          break;
-        case BaseResp.ErrCode.ERR_AUTH_DENIED:
-          result = "分享拒绝";
-          break;
-        default:
-          result = "分享错误";
-          break;
+      action = "授权";
+      if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
+        startRxCall(((SendAuth.Resp) resp).code);
+      } else {
+        Util.dismissProgressDialog();
       }
-
-      Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-
-      finish();
+    } else if (resp instanceof SendMessageToWX.Resp) {
+      action = "分享";
     }
+
+    switch (resp.errCode) {
+
+      case BaseResp.ErrCode.ERR_OK:
+        result = R.string.authorize_success;
+        break;
+      case BaseResp.ErrCode.ERR_USER_CANCEL:
+        result = R.string.authorize_cancel;
+        break;
+      default:
+        result = R.string.authorize_failed;
+        break;
+    }
+
+    Toast.makeText(this, getString(result, action), Toast.LENGTH_LONG).show();
+    finish();
   }
 
   /**
@@ -110,11 +116,13 @@ public class WXCallbackActivity extends Activity implements IWXAPIEventHandler {
         .subscribe(new Observer<WeiXinRawUserInfoResponse>() {
           @Override public void onCompleted() {
             Log.d("WXCallbackActivity", "onCompleted");
+            Util.dismissProgressDialog();
             finish();
           }
 
           @Override public void onError(Throwable e) {
             Log.e("WXCallbackActivity", e.getMessage());
+            Util.dismissProgressDialog();
             finish();
           }
 

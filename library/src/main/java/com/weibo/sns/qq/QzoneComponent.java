@@ -19,6 +19,7 @@ import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.Util;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class QzoneComponent extends BaseComponent {
       params.putStringArrayList(QzoneShare.SHARE_TO_QQ_IMAGE_URL, urls);
       tencent.shareToQzone((Activity) context, params, buildShareListener());
     } else {
-      Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+      Bitmap bitmap = Util.getDefaultBitmap(context);
       shareContent(title, summary, targetUrl, bitmap);
     }
 

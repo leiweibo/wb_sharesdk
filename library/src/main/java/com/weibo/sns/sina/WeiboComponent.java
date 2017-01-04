@@ -28,9 +28,12 @@ import com.weibo.sns.BaseComponent;
 import com.weibo.sns.Constants;
 import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
+import com.weibo.sns.R;
 import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.Util;
 import com.weibo.sns.sina.models.WeiboRawUserInfoResponse;
+import com.weibo.sns.weixin.WeixinComponent;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -47,7 +50,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   private IWeiboShareAPI weiboShareAPI;
 
   // 启动微博分享、登录的上下文
-  private Context context;
+  private static Context context;
 
   // 当 Activity 被重新初始化时（该 Activity 处于后台时，可能会由于内存不足被杀掉了），
   // 需要调用 {@link IWeiboShareAPI#handleWeiboResponse} 来接收微博客户端返回的数据。
@@ -64,13 +67,15 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   //图片分享的对象
   private Bitmap bitmap = null;
 
+  private static WeiboComponent instance;
+
   /**
    * WebComponent组件构造函数
    *
    * @param context activity上下文
    * @param savedInsance Activity实例里面的savedInstance
    */
-  public WeiboComponent(Context context, Bundle savedInsance) {
+  private WeiboComponent(Context context, Bundle savedInsance) {
     this.context = context;
     this.savedInstance = savedInsance;
     this.authInfo =
@@ -79,9 +84,25 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   }
 
   /**
+   * 特殊的单例模式，之所以做成单例，是因为分享回调的时候，需要去调用WBShareCallbackActivity，
+   * 在那边获取到这个对应的component，对weibo返回来的intent内容进行处理，为了不让这个单例一直持有
+   * 某一个activity的引用，所以判断getInstance里面传过来的context跟已存在的context不相等的时候，
+   * 重新new一个实例
+   */
+  public static WeiboComponent getInstance(Context context1, Bundle savedInstance) {
+    if (instance == null) {
+      instance = new WeiboComponent(context1, savedInstance);
+    } else if ((context != null && context1 != context)) {
+      context = context1;
+    }
+    return instance;
+  }
+
+  /**
    * 登录功能，如果本地已经安装微博客户端，那么直接唤起微博客户端进行登录认证，如果没有登录，则通过WebView进行登录
    */
   public void login(final LoginCallback callback) {
+    Util.showProgressDialog(context, "登录中");
     //实例化登录认证sso实例
     ssoHandler = new SsoHandler((Activity) context, authInfo);
     //如果实例化登录认证sso成功，则不为空，开始进行认证登录操作
@@ -104,22 +125,26 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   private WeiboAuthListener buildWeiboListener(final WeiboListenerCallback callback) {
     WeiboAuthListener weiboAuthListener = new WeiboAuthListener() {
       @Override public void onComplete(Bundle bundle) {
+        Util.toastMessage(context, R.string.authorize_success_full);
         Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(bundle);
         if (accessToken != null && accessToken.isSessionValid()) {
           AccessTokenKeeper.writeAccessToken(context.getApplicationContext(), accessToken);
           if (callback != null) {
             callback.doComplete();
           }
+          Util.dismissProgressDialog();
         }
       }
 
       @Override public void onWeiboException(WeiboException e) {
-        Toast.makeText(context, "登录失败，请重试", Toast.LENGTH_SHORT).show();
-        Log.e(getClass().getName(), e.getMessage());
+        Util.toastMessage(context, R.string.authorize_failed_full);
+        Log.e(getClass().getName(), e.getMessage() + "");
+        Util.dismissProgressDialog();
       }
 
       @Override public void onCancel() {
-        Toast.makeText(context, "登录取消", Toast.LENGTH_SHORT).show();
+        Util.toastMessage(context, R.string.authorize_cancel_full);
+        Util.dismissProgressDialog();
       }
     };
     return weiboAuthListener;
@@ -137,10 +162,11 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
         .observeOn(Schedulers.io())
         .subscribe(new Observer<WeiboRawUserInfoResponse>() {
           @Override public void onCompleted() {
-
+            Util.dismissProgressDialog();
           }
 
           @Override public void onError(Throwable e) {
+            Util.dismissProgressDialog();
             Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
           }
 
@@ -262,31 +288,11 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     }
 
     TextObject textObject = new TextObject();
-    textObject.text = title;
+    textObject.text = title + targetUrl;
     textObject.description = summary;
 
-    WebpageObject mediaObject = new WebpageObject();
-    mediaObject.identify = Utility.generateGUID();
-    mediaObject.title = title;
-    mediaObject.description = summary;
-    // 设置 Bitmap 类型的图片到视频对象里
-    // 设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-    if (image != null) {
-      mediaObject.setThumbImage(image);
-    }
-    if (!TextUtils.isEmpty(targetUrl)) {
-      mediaObject.actionUrl = targetUrl;
-    }
     WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
-    weiboMultiMessage.mediaObject = mediaObject;
     weiboMultiMessage.textObject = textObject;
-
-    if (bitmap != null) {
-      ImageObject imageObject = new ImageObject();
-      //设置缩略图。 注意：最终压缩过的缩略图大小不得超过 32kb。
-      imageObject.setImageObject(image);
-      weiboMultiMessage.imageObject = imageObject;
-    }
 
     SendMultiMessageToWeiboRequest request = new SendMultiMessageToWeiboRequest();
     request.transaction = String.valueOf(System.currentTimeMillis());
@@ -303,8 +309,8 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    * 来接收微博客户端返回的数据；执行成功，返回 true，并调用
    * {@link IWeiboHandler.Response#onResponse}；失败返回 false，不调用上述回调
    */
-  public void onNewIntent(Intent intent) {
-    weiboShareAPI.handleWeiboResponse(intent, this);
+  public void onNewIntent(Intent intent, IWeiboHandler.Response response) {
+    weiboShareAPI.handleWeiboResponse(intent, response);
   }
 
   @Override public void onResponse(BaseResponse baseResp) {

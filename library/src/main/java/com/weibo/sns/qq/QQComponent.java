@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.share.QQShare;
@@ -16,6 +18,7 @@ import com.weibo.sns.BaseComponent;
 import com.weibo.sns.Constants;
 import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
+import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.Util;
@@ -69,6 +72,7 @@ public class QQComponent extends BaseComponent {
     });
 
     if (!tencent.isSessionValid()) {
+      Util.showProgressDialog(context, "登录中");
       tencent.login((Activity) context, SCOPE, qqRequestListener);
     } else {
       tencent.logout(context);
@@ -87,26 +91,31 @@ public class QQComponent extends BaseComponent {
     IUiListener loginListener = new IUiListener() {
       @Override public void onComplete(Object response) {
         if (null == response) {
-          Util.showResultDialog(context, "返回为空", "登录失败");
+          Util.showResultDialog(context, "返回为空", "授权失败");
           return;
         }
         JSONObject jsonResponse = (JSONObject) response;
         if (jsonResponse.length() == 0) {
-          Util.showResultDialog(context, "返回为空", "登录失败");
+          Util.showResultDialog(context, "返回为空", "授权失败");
           return;
         }
 
+        Util.toastMessage(context, R.string.authorize_success_full);
         if (callback != null) {
           callback.doComplete((JSONObject) response);
         }
+        Util.dismissProgressDialog();
       }
 
       @Override public void onError(UiError uiError) {
-        Util.toastMessage(context, uiError.errorDetail);
+        Util.toastMessage(context, R.string.authorize_failed_full);
+        Log.e("QQComponent", uiError.errorDetail + "");
+        Util.dismissProgressDialog();
       }
 
       @Override public void onCancel() {
-        Util.toastMessage(context, "取消");
+        Util.toastMessage(context, R.string.authorize_cancel_full);
+        Util.dismissProgressDialog();
       }
     };
     return loginListener;
@@ -157,6 +166,8 @@ public class QQComponent extends BaseComponent {
       }
     } catch (JSONException e) {
       e.printStackTrace();
+    } finally {
+      Util.dismissProgressDialog();
     }
   }
 
@@ -169,7 +180,7 @@ public class QQComponent extends BaseComponent {
    * @param data data
    */
   @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if ((requestCode == REQUEST_LOGIN || requestCode == REQUEST_API) && resultCode == ACTIVITY_OK) {
+    if (requestCode == REQUEST_LOGIN || requestCode == REQUEST_API) {
       tencent.onActivityResultData(requestCode, resultCode, data, qqRequestListener);
     } else if (requestCode == REQUEST_QQ_SHARE) {
       Tencent.onActivityResultData(requestCode, resultCode, data, buildShareListener());
@@ -233,14 +244,19 @@ public class QQComponent extends BaseComponent {
    * @param image 图片url
    */
   @Override public void shareContent(String title, String summary, String targetUrl, String image) {
-    final Bundle params = new Bundle();
-    params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
-    params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
-    params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
-    params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
-    params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, image);
+    if (TextUtils.isEmpty(image)) {
+      Bitmap bitmap = Util.getDefaultBitmap(context);
+      shareContent(title, summary, targetUrl, bitmap);
+    } else {
+      final Bundle params = new Bundle();
+      params.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT);
+      params.putString(QQShare.SHARE_TO_QQ_TITLE, title);
+      params.putString(QQShare.SHARE_TO_QQ_SUMMARY, summary);
+      params.putString(QQShare.SHARE_TO_QQ_TARGET_URL, targetUrl);
+      params.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, image);
 
-    tencent.shareToQQ((Activity) context, params, buildShareListener());
+      tencent.shareToQQ((Activity) context, params, buildShareListener());
+    }
   }
 
   /**
