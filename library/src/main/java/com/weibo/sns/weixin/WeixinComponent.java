@@ -9,6 +9,7 @@ import com.tencent.mm.sdk.openapi.WXAPIFactory;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.Util;
+import java.lang.ref.WeakReference;
 
 import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 
@@ -26,7 +27,7 @@ import static com.tencent.mm.sdk.modelmsg.SendMessageToWX.Req.WXSceneSession;
 
 public class WeixinComponent extends WeixinBaseComponent {
 
-  private static WeixinComponent instance;
+  private static WeakReference<WeixinComponent> weakReference;
 
   private WeixinComponent(Context context) {
     this.context = context;
@@ -39,14 +40,17 @@ public class WeixinComponent extends WeixinBaseComponent {
    * 为了能保持代码一致性，在登录的时候，把接口注入，所以这里采用单例。为了不让这个单例一直持有
    * 某一个activity的引用，所以判断getInstance里面传过来的context跟已存在的context不相等的时候，
    * 重新new一个实例
+   * 这里采用Weakreference防止内存泄漏
    */
   public static WeixinComponent getInstance(Context context1) {
-    if (instance == null) {
-      instance = new WeixinComponent(context1);
+    if (weakReference == null) {
+      WeixinComponent component = new WeixinComponent(context1);
+      weakReference = new WeakReference<>(component);
+      return component;
     } else if ((context != null) && context !=  context1) {
       context = context1;
     }
-    return instance;
+    return weakReference.get();
   }
 
   /**

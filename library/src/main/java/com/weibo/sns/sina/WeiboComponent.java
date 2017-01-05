@@ -34,6 +34,7 @@ import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.Util;
 import com.weibo.sns.sina.models.WeiboRawUserInfoResponse;
 import com.weibo.sns.weixin.WeixinComponent;
+import java.lang.ref.WeakReference;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -67,7 +68,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
   //图片分享的对象
   private Bitmap bitmap = null;
 
-  private static WeiboComponent instance;
+  private static WeakReference<WeiboComponent> weakReference;
 
   /**
    * WebComponent组件构造函数
@@ -88,14 +89,17 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    * 在那边获取到这个对应的component，对weibo返回来的intent内容进行处理，为了不让这个单例一直持有
    * 某一个activity的引用，所以判断getInstance里面传过来的context跟已存在的context不相等的时候，
    * 重新new一个实例
+   * 这里采用Weakreference防止内存泄漏
    */
   public static WeiboComponent getInstance(Context context1, Bundle savedInstance) {
-    if (instance == null) {
-      instance = new WeiboComponent(context1, savedInstance);
+    if (weakReference == null) {
+      WeiboComponent component = new WeiboComponent(context1, savedInstance);
+      weakReference = new WeakReference<WeiboComponent>(component);
+      return component;
     } else if ((context != null && context1 != context)) {
       context = context1;
     }
-    return instance;
+    return weakReference.get();
   }
 
   /**
