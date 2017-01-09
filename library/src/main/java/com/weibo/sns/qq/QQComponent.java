@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,20 +18,25 @@ import com.weibo.sns.Constants;
 import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
+import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.SharePlatformConfig;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.Util;
+import com.weibo.sns.qq.network.QQApiService;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import okhttp3.ResponseBody;
 import org.json.JSONException;
 import org.json.JSONObject;
 import rx.Observable;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.tencent.connect.common.Constants.ACTIVITY_OK;
 import static com.tencent.connect.common.Constants.PARAM_ACCESS_TOKEN;
 import static com.tencent.connect.common.Constants.PARAM_EXPIRES_IN;
 import static com.tencent.connect.common.Constants.PARAM_OPEN_ID;
@@ -64,12 +68,12 @@ public class QQComponent extends BaseComponent {
    * QQ登录，登录完成之后，返回 screen_name， profile_image_url， openid字段
    */
   public void login(LoginCallback callback) {
-    qqRequestListener = buildQQListenr(new QQListenerCallback() {
+    qqRequestListener = buildQQListener(new QQListenerCallback() {
       @Override public void doComplete(JSONObject object) {
         initOpenidAndToken(object);
         getUserInfo();
       }
-    });
+    }, false);
 
     if (!tencent.isSessionValid()) {
       Util.showProgressDialog(context, "登录中");
@@ -87,7 +91,7 @@ public class QQComponent extends BaseComponent {
    *
    * @return 回调监听
    */
-  private IUiListener buildQQListenr(final QQListenerCallback callback) {
+  private IUiListener buildQQListener(final QQListenerCallback callback, final boolean showToast) {
     IUiListener loginListener = new IUiListener() {
       @Override public void onComplete(Object response) {
         if (null == response) {
@@ -99,8 +103,9 @@ public class QQComponent extends BaseComponent {
           Util.showResultDialog(context, "返回为空", "授权失败");
           return;
         }
-
-        Util.toastMessage(context, R.string.authorize_success_full);
+        if (showToast) {
+          Util.toastMessage(context, R.string.authorize_success_full);
+        }
         if (callback != null) {
           callback.doComplete((JSONObject) response);
         }
@@ -143,11 +148,11 @@ public class QQComponent extends BaseComponent {
   private void getUserInfo() {
     if (tencent != null && tencent.isSessionValid()) {
       UserInfo userInfo = new UserInfo(context, tencent.getQQToken());
-      qqRequestListener = buildQQListenr(new QQListenerCallback() {
+      qqRequestListener = buildQQListener(new QQListenerCallback() {
         @Override public void doComplete(JSONObject object) {
           doGetUserInfoComplete(object);
         }
-      });
+      }, true);
       userInfo.getUserInfo(qqRequestListener);
     }
   }
@@ -157,12 +162,42 @@ public class QQComponent extends BaseComponent {
     JSONObject jsonObject = (JSONObject) response;
     try {
       if (jsonObject != null) {
-        UserInfoResponse userInfoResponse = new UserInfoResponse(getSource(), tencent.getOpenId(),
+        final UserInfoResponse userInfoResponse = new UserInfoResponse(getSource(), tencent.getOpenId(),
             jsonObject.getString(PARAM_NICK_NAME), jsonObject.getString(PARAM_ICON_URL));
 
-        if (loginCallback != null) {
-          loginCallback.onComplete(userInfoResponse);
-        }
+        QQApiService qqApiService = ServiceFactory.getQQApiService();
+        Map<String, String> map = new HashMap<>();
+        map.put("access_token", tencent.getAccessToken());
+        map.put("unionid", "1");
+        qqApiService.getUnionId(map).subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.io())
+            .subscribe(new Observer<ResponseBody>() {
+              @Override public void onCompleted() {
+                Util.dismissProgressDialog();
+              }
+
+              @Override public void onError(Throwable e) {
+                Util.dismissProgressDialog();
+                Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+              }
+
+              @Override public void onNext(ResponseBody response) {
+                try {
+                  JSONObject jsonObject = com.tencent.open.utils.Util.parseJson(response.string());
+                  String unionId = jsonObject.getString("unionid");
+                  Log.e("QQComponent", "unionId:" + unionId);
+                  if (loginCallback != null) {
+                    userInfoResponse.setUnionId(unionId);
+                    loginCallback.onComplete(userInfoResponse);
+                  }
+                } catch (IOException e) {
+                  e.printStackTrace();
+                } catch (JSONException e) {
+                  e.printStackTrace();
+                }
+
+              }
+            });
       }
     } catch (JSONException e) {
       e.printStackTrace();

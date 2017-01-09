@@ -12,6 +12,7 @@ public class UserInfoResponse implements Serializable {
   private String uid;
   private String nickname;
   private String imageUrl;
+  private String unionId; //Just for qq
 
   public UserInfoResponse(String snsKind, String uid, String nickName, String imgUrl) {
     this.snsKind = snsKind;
@@ -34,6 +35,14 @@ public class UserInfoResponse implements Serializable {
 
   public String getImageUrl() {
     return imageUrl;
+  }
+
+  public String getUnionId() {
+    return unionId;
+  }
+
+  public void setUnionId(String unionId) {
+    this.unionId = unionId;
   }
 
 }

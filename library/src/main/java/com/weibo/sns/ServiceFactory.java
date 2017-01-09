@@ -1,5 +1,7 @@
 package com.weibo.sns;
 
+import com.weibo.sns.qq.network.QQApiService;
+import com.weibo.sns.qq.network.QQServiceManager;
 import com.weibo.sns.sina.network.WeiboApiService;
 import com.weibo.sns.sina.network.WeiboApiServiceManager;
 import com.weibo.sns.weixin.network.WeixinApiService;
@@ -13,6 +15,7 @@ public class ServiceFactory {
   private static final Object monitor = new Object();
   private static WeixinApiService apiService;
   private static WeiboApiService weiboApiService;
+  private static QQApiService qqApiService;
 
   public static WeixinApiService getWeixinApiService() {
     synchronized (monitor) {
@@ -29,6 +32,15 @@ public class ServiceFactory {
         weiboApiService = new WeiboApiServiceManager().getApiService();
       }
       return weiboApiService;
+    }
+  }
+
+  public static QQApiService getQQApiService() {
+    synchronized (monitor) {
+      if (qqApiService == null) {
+        qqApiService = new QQServiceManager().getApiService();
+      }
+      return qqApiService;
     }
   }
 }
