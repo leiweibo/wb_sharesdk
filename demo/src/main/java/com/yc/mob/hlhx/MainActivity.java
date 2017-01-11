@@ -1,4 +1,4 @@
-package com.niubang.uguma;
+package com.yc.mob.hlhx;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,10 +17,10 @@ import com.weibo.sns.UserInfoResponse;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-  private final String WEIXIN_APP_ID = "wxd07936d8648b4da5";
-  private final String WEIXIN_APP_SCRECT = "a7309ef6d60a2127318423cbad300aae";
-  private final String WEIBO_APP_KEY = "3616164551";
-  private final String QQ_APP_ID = "1105406253";
+  private final String WEIXIN_APP_ID = "wx38a5a30cf440be9a";
+  private final String WEIXIN_APP_SCRECT = "35f902992899642c5f389db0c8ebcad2";
+  private final String WEIBO_APP_KEY = "4253304619";
+  private final String QQ_APP_ID = "1104536732"; //更新
 
   private String title; //标题
   private String summary; //概要
@@ -177,7 +177,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         shareType = Constants.SHARE_URL_IMG_LOCAL;
         break;
 
-
       case R.id.weixin_circle_img1:
         platform = Constants.BIND_SOURCE_WEIXIN_CIRCLE;
         imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
@@ -217,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         shareType = Constants.SHARE_IMG_LOCAL;
         break;
 
-
       case R.id.weibo_share_img2:
         platform = Constants.BIND_SOURCE_SINA;
         imageUrl = "http://imgcache.qq.com/qzone/space_item/pre/0/66768.gif";
@@ -243,8 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         targetUrl = "http://www.qq.com/news/1.html";
         shareType = Constants.SHARE_URL_IMG_URL;
         break;
-
-
 
       /////////////////////////以下是登录
 
@@ -281,8 +277,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     } else {
       runOnUiThread(new Runnable() {
         @Override public void run() {
-          ShareApi shareApi = ShareApi.getInstance()
-              .platform(MainActivity.this, platform, savedInstance);
+          ShareApi shareApi =
+              ShareApi.getInstance().platform(MainActivity.this, platform, savedInstance);
 
           shareApi.withTitle(title)
               .withShareType(shareType)
@@ -295,7 +291,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
           component = shareApi.getComponent();
         }
       });
-
     }
   }
 

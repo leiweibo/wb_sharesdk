@@ -1,4 +1,4 @@
-package com.niubang.uguma;
+package com.yc.mob.hlhx;
 
 import com.weibo.sns.sina.WBShareCallBackActivity;
 

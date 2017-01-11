@@ -6,21 +6,21 @@ android {
 
   signingConfigs {
     debug_config {
-      keyAlias 'heiniu'
-      keyPassword '111111'
-      storeFile file('keystore/keystore2')
-      storePassword '111111'
+      keyAlias 'ycwl.keystore'
+      keyPassword 'hzycwl'
+      storeFile file('keystore/wbsharesdk.keystore')
+      storePassword 'hzycwl'
     }
     release_config {
-      keyAlias 'heiniu'
-      keyPassword '111111'
-      storeFile file('keystore/keystore2')
-      storePassword '111111'
+      keyAlias 'ycwl.keystore'
+      keyPassword 'hzycwl'
+      storeFile file('keystore/wbsharesdk.keystore')
+      storePassword 'hzycwl'
     }
   }
 
   defaultConfig {
-    applicationId "com.niubang.uguma"
+    applicationId "com.yc.mob.hlhx"
     minSdkVersion 15
     targetSdkVersion 25
     versionCode 1
