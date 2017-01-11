@@ -31,6 +31,7 @@ import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.ServiceFactory;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.ToastUtil;
 import com.weibo.sns.Util;
 import com.weibo.sns.sina.models.WeiboRawUserInfoResponse;
 import com.weibo.sns.weixin.WeixinComponent;
@@ -171,7 +172,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
 
           @Override public void onError(Throwable e) {
             Util.dismissProgressDialog();
-            Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+            ToastUtil.showToast(context, "获取用户信息失败，请重试");
           }
 
           @Override public void onNext(WeiboRawUserInfoResponse weiboRawUserInfoResponse) {
@@ -181,7 +182,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
                 loginCallback.onComplete(weiboRawUserInfoResponse.converToUserInfo());
               }
             } else {
-              Toast.makeText(context, "获取用户信息失败，请重试", Toast.LENGTH_LONG).show();
+              ToastUtil.showToast(context, "获取用户信息失败，请重试");
             }
           }
         });
@@ -292,7 +293,25 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     }
 
     TextObject textObject = new TextObject();
-    textObject.text = title + targetUrl;
+    StringBuilder content = new StringBuilder();
+    if (!TextUtils.isEmpty(title) && !TextUtils.isEmpty(summary)) {
+      if(title.equalsIgnoreCase(summary)) {
+        content.append(title);
+      } else {
+        content.append(title + "\n" + summary);
+      }
+    } else {
+
+      if (!TextUtils.isEmpty(title)) {
+        content.append(title);
+      }
+
+      if (!(TextUtils.isEmpty(summary))) {
+        content.append(summary);
+      }
+    }
+    content.append(" " + targetUrl);
+    textObject.text = content.toString();
     textObject.description = summary;
 
     WeiboMultiMessage weiboMultiMessage = new WeiboMultiMessage();
@@ -321,14 +340,13 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
     if (baseResp != null) {
       switch (baseResp.errCode) {
         case WBConstants.ErrorCode.ERR_OK:
-          Toast.makeText(context, "分享成功", Toast.LENGTH_LONG).show();
+          ToastUtil.showToast(context, "分享成功");
           break;
         case WBConstants.ErrorCode.ERR_CANCEL:
-          Toast.makeText(context, "分享取消", Toast.LENGTH_LONG).show();
+          ToastUtil.showToast(context, "分享取消");
           break;
         case WBConstants.ErrorCode.ERR_FAIL:
-          Toast.makeText(context, "分享失败" + "Error Message: " + baseResp.errMsg, Toast.LENGTH_LONG)
-              .show();
+          ToastUtil.showToast(context, "分享失败" + "Error Message: " + baseResp.errMsg);
           break;
       }
     }
@@ -349,7 +367,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
       }
 
       @Override public void onCancel() {
-        Toast.makeText(context, "分享取消", Toast.LENGTH_LONG).show();
+        ToastUtil.showToast(context, "分享取消");
       }
     };
 

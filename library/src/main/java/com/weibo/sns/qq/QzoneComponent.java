@@ -19,6 +19,7 @@ import com.weibo.sns.DiskCacheUtil;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.ToastUtil;
 import com.weibo.sns.Util;
 import java.io.File;
 import java.io.IOException;
@@ -186,19 +187,19 @@ public class QzoneComponent extends BaseComponent {
   private IUiListener buildShareListener() {
     IUiListener uiListener = new IUiListener() {
       @Override public void onComplete(Object o) {
-        Toast.makeText(context, "分享成功", Toast.LENGTH_SHORT).show();
+        ToastUtil.showToast(context, "分享成功");
       }
 
       @Override public void onError(UiError uiError) {
         ((Activity) context).runOnUiThread(new Runnable() {
           @Override public void run() {
-            Toast.makeText(context, "分享失败", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(context, "分享失败");
           }
         });
       }
 
       @Override public void onCancel() {
-        Toast.makeText(context, "分享取消", Toast.LENGTH_SHORT).show();
+        ToastUtil.showToast(context, "分享取消");
       }
     };
     return uiListener;

@@ -27,7 +27,7 @@ public abstract class WeixinBaseComponent extends BaseComponent {
 
   protected IWXAPI wxapi;
   protected static Context context;
-  private final static int THUMB_SIZE = 150;
+  private final static int THUMB_SIZE_WIDTH = 100;
 
   /**
    * 分享图文内容到微信 或者 朋友圈，图片为本地图片
@@ -52,13 +52,33 @@ public abstract class WeixinBaseComponent extends BaseComponent {
     msg.title = title;
     msg.description = summary;
     if (bitmap != null) {
-      Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
-      bitmap.recycle();
-      msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+      Bitmap thumbBmp = generateThumBitmap(bitmap);
+      if (thumbBmp != null) {
+        bitmap.recycle();
+        msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+      }
     }
     req.message = msg;
 
     wxapi.sendReq(req);
+  }
+
+  /**
+   * 生成缩略图，宽度100，高度等比缩放
+   * @param bitmap 原图
+   * @return 缩略图biamap
+   */
+  private Bitmap generateThumBitmap(Bitmap bitmap) {
+    Bitmap thumbBmp = null;
+    if (bitmap != null) {
+      int bitmapHeight = bitmap.getHeight();
+      int bitmapWidth = bitmap.getWidth();
+      float ratio = (float) bitmapHeight / bitmapWidth;
+      thumbBmp =
+          Bitmap.createScaledBitmap(bitmap, THUMB_SIZE_WIDTH, (int)(THUMB_SIZE_WIDTH * ratio), true);
+
+    }
+    return thumbBmp;
   }
 
   /**
@@ -68,10 +88,21 @@ public abstract class WeixinBaseComponent extends BaseComponent {
    * @return 转化之后的byte数组
    */
   private byte[] bitMap2Bytes(Bitmap bitmap) {
-    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
-    return baos.toByteArray();
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
+    bitmap.recycle();
+
+    byte[] result = output.toByteArray();
+    try {
+      output.close();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return result;
   }
+
+
 
   /**
    * 分享图文内容到微信，图片为远程图片
@@ -109,18 +140,23 @@ public abstract class WeixinBaseComponent extends BaseComponent {
    */
   protected void shareImage(Bitmap bitmap, int target) {
     if (bitmap != null) {
-      SendMessageToWX.Req req = new SendMessageToWX.Req();
-      req.transaction = String.valueOf(System.currentTimeMillis());
-      req.scene = target;
+
+      WXImageObject imgObj = new WXImageObject(bitmap);
+
       WXMediaMessage msg = new WXMediaMessage();
-      WXImageObject wxImageObject = new WXImageObject(bitmap);
-      msg.mediaObject = wxImageObject;
+      msg.mediaObject = imgObj;
+      if (bitmap != null) {
+        Bitmap thumbBmp = generateThumBitmap(bitmap);
+        if (thumbBmp != null) {
+          bitmap.recycle();
+          msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+        }
+      }
 
-      Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, THUMB_SIZE, THUMB_SIZE, true);
-      bitmap.recycle();
-      msg.thumbData = bitMap2Bytes(thumbBmp);  //设置缩略图
+      SendMessageToWX.Req req = new SendMessageToWX.Req();
+      req.transaction = String.valueOf("img" + System.currentTimeMillis());
       req.message = msg;
-
+      req.scene = target;
       wxapi.sendReq(req);
     }
   }

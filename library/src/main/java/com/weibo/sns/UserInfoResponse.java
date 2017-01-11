@@ -22,7 +22,16 @@ public class UserInfoResponse implements Serializable {
   }
 
   @Override public String toString() {
-    return "sns:" + snsKind + ", uId:" + uid + ", nickName:" + nickname + ", icon:" + imageUrl;
+    return "sns:"
+        + snsKind
+        + ", uId:"
+        + uid
+        + ", nickName:"
+        + nickname
+        + ", icon:"
+        + imageUrl
+        + ", unionId:"
+        + unionId;
   }
 
   public String getUid() {
@@ -44,5 +53,4 @@ public class UserInfoResponse implements Serializable {
   public void setUnionId(String unionId) {
     this.unionId = unionId;
   }
-
 }

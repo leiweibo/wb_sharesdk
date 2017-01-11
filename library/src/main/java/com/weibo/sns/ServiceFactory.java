@@ -1,5 +1,14 @@
 package com.weibo.sns;
 
+import com.weibo.sns.sina.network.WeiboApiService;
+import com.weibo.sns.sina.network.WeiboApiServiceManager;
+import com.weibo.sns.weixin.network.WeixinApiService;
+import com.weibo.sns.weixin.network.WeixinServiceManager;
+
+/**
+ * Created by leiweibo on 12/20/16.
+ */
+
 import com.weibo.sns.qq.network.QQApiService;
 import com.weibo.sns.qq.network.QQServiceManager;
 import com.weibo.sns.sina.network.WeiboApiService;

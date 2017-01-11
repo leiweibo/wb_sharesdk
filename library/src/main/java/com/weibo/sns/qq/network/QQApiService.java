@@ -1,6 +1,5 @@
 package com.weibo.sns.qq.network;
 
-import com.weibo.sns.qq.models.QQResponse;
 import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;

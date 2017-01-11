@@ -42,8 +42,7 @@ public class Util {
           toast.cancel();
           toast = null;
         }
-        toast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
-        toast.show();
+        ToastUtil.showToast(activity, message);
       }
     });
   }

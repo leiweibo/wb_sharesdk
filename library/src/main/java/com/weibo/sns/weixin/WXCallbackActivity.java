@@ -10,6 +10,7 @@ import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
+import com.weibo.sns.ToastUtil;
 import com.weibo.sns.UserInfoResponse;
 import com.weibo.sns.Util;
 import com.weibo.sns.weixin.models.AccessTokenResponse;
@@ -87,7 +88,7 @@ public class WXCallbackActivity extends Activity implements IWXAPIEventHandler {
         break;
     }
 
-    Toast.makeText(this, getString(result, action), Toast.LENGTH_LONG).show();
+    ToastUtil.showToast(this, getString(result, action));
     finish();
   }
 

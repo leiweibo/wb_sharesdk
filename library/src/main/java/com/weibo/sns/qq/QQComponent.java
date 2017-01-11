@@ -162,14 +162,16 @@ public class QQComponent extends BaseComponent {
     JSONObject jsonObject = (JSONObject) response;
     try {
       if (jsonObject != null) {
-        final UserInfoResponse userInfoResponse = new UserInfoResponse(getSource(), tencent.getOpenId(),
-            jsonObject.getString(PARAM_NICK_NAME), jsonObject.getString(PARAM_ICON_URL));
+        final UserInfoResponse userInfoResponse =
+            new UserInfoResponse(getSource(), tencent.getOpenId(),
+                jsonObject.getString(PARAM_NICK_NAME), jsonObject.getString(PARAM_ICON_URL));
 
         QQApiService qqApiService = ServiceFactory.getQQApiService();
         Map<String, String> map = new HashMap<>();
         map.put("access_token", tencent.getAccessToken());
         map.put("unionid", "1");
-        qqApiService.getUnionId(map).subscribeOn(Schedulers.io())
+        qqApiService.getUnionId(map)
+            .subscribeOn(Schedulers.io())
             .observeOn(Schedulers.io())
             .subscribe(new Observer<ResponseBody>() {
               @Override public void onCompleted() {
@@ -185,7 +187,6 @@ public class QQComponent extends BaseComponent {
                 try {
                   JSONObject jsonObject = com.tencent.open.utils.Util.parseJson(response.string());
                   String unionId = jsonObject.getString("unionid");
-                  Log.e("QQComponent", "unionId:" + unionId);
                   if (loginCallback != null) {
                     userInfoResponse.setUnionId(unionId);
                     loginCallback.onComplete(userInfoResponse);
@@ -195,7 +196,6 @@ public class QQComponent extends BaseComponent {
                 } catch (JSONException e) {
                   e.printStackTrace();
                 }
-
               }
             });
       }
