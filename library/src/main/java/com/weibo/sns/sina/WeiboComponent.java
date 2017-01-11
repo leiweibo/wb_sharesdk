@@ -92,7 +92,7 @@ public class WeiboComponent extends BaseComponent implements IWeiboHandler.Respo
    * 这里采用Weakreference防止内存泄漏
    */
   public static WeiboComponent getInstance(Context context1, Bundle savedInstance) {
-    if (weakReference == null) {
+    if (weakReference == null || weakReference.get() == null) {
       WeiboComponent component = new WeiboComponent(context1, savedInstance);
       weakReference = new WeakReference<WeiboComponent>(component);
       return component;

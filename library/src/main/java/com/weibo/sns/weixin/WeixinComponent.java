@@ -43,7 +43,7 @@ public class WeixinComponent extends WeixinBaseComponent {
    * 这里采用Weakreference防止内存泄漏
    */
   public static WeixinComponent getInstance(Context context1) {
-    if (weakReference == null) {
+    if (weakReference == null || weakReference.get() == null) {
       WeixinComponent component = new WeixinComponent(context1);
       weakReference = new WeakReference<>(component);
       return component;
