@@ -3,10 +3,9 @@ package com.weibo.sns.weixin;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Toast;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.weibo.sns.Constants;
 import com.weibo.sns.LoginCallback;
 import com.weibo.sns.R;
 import com.weibo.sns.SharePlatformConfig;
@@ -68,11 +67,16 @@ public class WXCallbackActivity extends Activity implements IWXAPIEventHandler {
       action = "授权";
       if (resp.errCode == BaseResp.ErrCode.ERR_OK) {
         startRxCall(((SendAuth.Resp) resp).code);
-      } else {
-        Util.dismissProgressDialog();
       }
     } else if (resp instanceof SendMessageToWX.Resp) {
-      action = "分享";
+      if (resp != null && TextUtils.isEmpty(resp.transaction)) {
+        action = "授权";
+      } else {
+        action = "分享";
+      }
+    }
+    if (resp.errCode != BaseResp.ErrCode.ERR_OK) {
+      Util.dismissProgressDialog();
     }
 
     switch (resp.errCode) {
